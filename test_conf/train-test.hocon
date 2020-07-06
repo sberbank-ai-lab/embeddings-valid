@@ -1,0 +1,103 @@
+{
+    environment: {
+        work_dir: "train-test.work"
+    }
+    report_file: "train-test.txt"
+
+    target: {
+        file_name: "../test_data/target.csv"
+        cols_id: [id]
+        cols_id_type: [int]
+        col_target: y
+    }
+
+    split: {
+        train_id: {
+            file_name: "../test_data/id_train.csv"
+        }
+        valid_id: {
+            file_name: "../test_data/id_valid.csv"
+        }
+        test_id: {
+            file_name: "../test_data/id_test.csv"
+        }
+
+        n_iteration: 5
+        train_shuffle_random_states: [1, 2, 3, 4, 5]
+    }
+
+    data_files: {
+        01_baseline: {
+            enabled: true
+            file_name: ../test_data/features_0.csv
+            rename_cols: {uid: id}
+        },
+        02_embeddings: {
+            enabled: true
+            file_name: ../test_data/features_1.csv
+        }
+    }
+
+    features: {
+        03_both: {
+            enabled: true
+            data_files: [01_baseline, 02_embeddings]
+        }
+    }
+
+    models: {
+        linear: {
+            enabled: true
+            type: LogisticRegression
+            params: {
+                C: 0.1
+            }
+        },
+        linear2: {
+            enabled: true
+            type: LogisticRegression
+            params: {
+                C: 1.0
+            }
+        },
+        lgbm: {
+            enabled: true
+            type: LGBMClassifier,
+            params: {
+                n_jobs: 6
+            }
+        }
+    }
+
+    metrics: {
+        auroc: {
+            enabled: true
+            score_func: roc_auc_score
+            scorer_params: {needs_proba: true}
+
+        }
+    }
+
+    report: {
+        is_check_train: true
+
+        auroc: {
+            float_format: "{:.3f}"
+            keep_columns: ["mean", "t_pm", values]
+        }
+
+        cnt_features: {
+            float_format: "{:.0f}"
+            keep_columns: ["mean"]
+        }
+
+        cnt_samples: {
+            float_format: "{:9,.0f}"
+            keep_columns: ["mean"]
+        }
+
+        auroc_score_time {
+            float_format: "{:,.1f}"
+        }
+    }
+}
