@@ -42,6 +42,16 @@ All models for both cross-validation and train-test setup estimated on isolated 
 N scores from N models provided.
 Result is a mean of N scores with p% confidence interval.
 
+### Check id intersection
+Ids in train, valid, test shouldn't be intersected. There is a check in `FoldSplitter`.
+There are two options:
+ - `split.fit_ids is False`: only check. Raise exception when id intersection detected.
+ - `split.fit_ids is True`: check and correction. Remove records which a presented in other splits:
+    - remove from `valid` records are presented in `test`
+    - remove from `train` records are presented in `test`
+    - remove from `train` records are presented in `valid`
+Check removed record removed counts in `{work_dir}\folds\folds.json`
+
 ## Estimator
 Many estimators can be used for learn feature and target relations.
 We expect sklearn-like fit-predict interface.
