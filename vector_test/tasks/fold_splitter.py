@@ -12,6 +12,8 @@ from vector_test.file_reader import TargetFile, IdFile
 class FoldSplitter(luigi.Task):
     conf = luigi.Parameter()
 
+    _split_info = {}
+
     def output(self):
         conf = Config.read_file(self.conf)
         path = os.path.join(conf.work_dir, 'folds', 'folds.json')
@@ -30,12 +32,12 @@ class FoldSplitter(luigi.Task):
             folds = self.cross_val_split()
         assert folds is not None
 
+        folds['_split_info'] = self._split_info
         with self.output().open('w') as f:
             json.dump(folds, f, indent=2)
 
-    def _read_id_split_save(self, df_target, read_file_params, save_path):
+    def _read_id_split_save(self, df_target, ids, save_path):
         conf = Config.read_file(self.conf)
-        ids = IdFile.read_table(conf, **read_file_params)
         df_target_fold = df_target.select_ids(ids)
         path = os.path.join(conf.work_dir, 'folds', save_path)
         df_target_fold.dump(path)
@@ -52,10 +54,18 @@ class FoldSplitter(luigi.Task):
         conf = Config.read_file(self.conf)
 
         df_target = TargetFile.read_table(conf, **conf['target'])
-        train_info = self._read_id_split_save(df_target, conf['split.train_id'], 'target_train.pickle')
-        valid_info = self._read_id_split_save(df_target, conf['split.valid_id'], 'target_valid.pickle')
+        ids_train = IdFile.read_table(conf, **conf['split.train_id'])
+        ids_valid = IdFile.read_table(conf, **conf['split.valid_id'])
         if 'test_id' in conf['split']:
-            test_info = self._read_id_split_save(df_target, conf['split.test_id'], 'target_test.pickle')
+            ids_test = IdFile.read_table(conf, **conf['split.test_id'])
+        else:
+            ids_test = None
+        ids_train, ids_valid, ids_test = self.check_ids_intersection(ids_train, ids_valid, ids_test)
+
+        train_info = self._read_id_split_save(df_target, ids_train, 'target_train.pickle')
+        valid_info = self._read_id_split_save(df_target, ids_valid, 'target_valid.pickle')
+        if 'test_id' in conf['split']:
+            test_info = self._read_id_split_save(df_target, ids_test, 'target_test.pickle')
         else:
             test_info = None
 
@@ -85,12 +95,18 @@ class FoldSplitter(luigi.Task):
         df_target = TargetFile.read_table(conf, **conf['target'])
 
         if 'test_id' in conf['split']:
-            test_info = self._read_id_split_save(df_target, conf['split.test_id'], 'target_test.pickle')
+            ids_test = IdFile.read_table(conf, **conf['split.test_id'])
+        else:
+            ids_test = None
+        ids_train = IdFile.read_table(conf, **conf['split.train_id'])
+        ids_train, _, ids_test = self.check_ids_intersection(ids_train, None, ids_test)
+
+        if 'test_id' in conf['split']:
+            test_info = self._read_id_split_save(df_target, ids_test, 'target_test.pickle')
         else:
             test_info = None
 
-        ids = IdFile.read_table(conf, **conf['split.train_id'])
-        df_target_train = df_target.select_ids(ids)
+        df_target_train = df_target.select_ids(ids_train)
 
         folds = {}
         for i, (i_train, i_valid) in enumerate(self.get_folds(df_target_train)):
@@ -105,5 +121,49 @@ class FoldSplitter(luigi.Task):
 
         return folds
 
+    def check_ids_intersection(self, train, valid, test):
+        """
 
+        :param train: mandatory
+        :param valid: depends on validation schema
+        :param test: optional
+        :return:
+        """
+        def check_intersect(df1, df2, pair_name):
+            """
+
+            :param df1: not changed
+            :param df2: records from df1 wil be removed
+            :param pair_name:
+            :return:
+            """
+            if df1 is None or df2 is None:
+                return df1, df2
+
+            if conf['split.fit_ids']:
+                df2, excluded_cnt = df2.exclude_ids(df1)
+                if len(df2) == 0:
+                    raise AttributeError(f'All records excluded in {pair_name}')
+                self._split_info['check_intersect'][pair_name] = {'excluded_cnt': excluded_cnt}
+
+            else:
+                df = df2.select_ids(df1)
+                if len(df) > 0:
+                    raise AttributeError(f'Found id intersection in {pair_name}. '
+                                         f'{len(df)} ({len(df) / len(df2) * 100}%) common records:\n'
+                                         f'{df.df.head(2)}')
+                self._split_info['check_intersect'][pair_name] = {'check': 'done'}
+            return df1, df2
+
+        if train is None:
+            raise AssertionError(f'Incorrect splits: {train is not None}, {valid is not None}, {test is not None}')
+        conf = Config.read_file(self.conf)
+        self._split_info['check_intersect'] = {}
+        self._split_info['check_intersect']['fit_ids'] = conf['split.fit_ids']
+
+        test, valid = check_intersect(test, valid, 'test-valid')
+        test, train = check_intersect(test, train, 'test-train')
+        valid, train = check_intersect(valid, train, 'valid-train')
+
+        return train, valid, test
 

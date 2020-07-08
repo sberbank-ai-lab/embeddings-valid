@@ -12,6 +12,8 @@
     }
 
     split: {
+        fit_ids: false
+
         train_id: {
             file_name: "../test_data/id_train.csv"
         }

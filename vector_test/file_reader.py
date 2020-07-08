@@ -67,6 +67,9 @@ class BaseReader:
 
         return self
 
+    def __len__(self):
+        return len(self.df)
+
     def keep_columns(self):
         raise NotImplementedError()
 
@@ -86,6 +89,15 @@ class BaseReader:
         new_df = self.clone_schema()
         new_df.df = pd.merge(self.df, df_ids.ids_values, left_on=self.cols_id, right_on=df_ids.cols_id, how='inner')
         return new_df
+
+    def exclude_ids(self, df_ids):
+        new_df = self.clone_schema()
+        df = pd.merge(self.df, df_ids.ids_values,
+                      left_on=self.cols_id, right_on=df_ids.cols_id, how='left', indicator=True)
+        excluded_cnt = df['_merge'].eq('both').sum()
+        df = df[df['_merge'].eq('left_only')].drop(columns='_merge')
+        new_df.df = df
+        return new_df, int(excluded_cnt)
 
     def select_pos(self, df_pos):
         new_df = self.clone_schema()
