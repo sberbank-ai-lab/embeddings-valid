@@ -4,7 +4,7 @@ import datetime
 from functools import partial
 
 import pandas as pd
-from pandas.io.json import json_normalize
+from pandas import json_normalize
 import scipy.stats
 
 import luigi

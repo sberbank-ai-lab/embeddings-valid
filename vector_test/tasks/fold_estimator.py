@@ -6,7 +6,7 @@ import luigi
 from vector_test.config import Config
 from vector_test.file_reader import TargetFile
 from vector_test.metrics import Metrics
-from vector_test import models
+from vector_test import cls_loader
 from vector_test.tasks.fold_splitter import FoldSplitter
 from vector_test.x_transformer import XTransformer
 
@@ -34,7 +34,7 @@ class FoldEstimator(luigi.Task):
         conf = Config.read_file(self.conf)
 
         x_transf = XTransformer(conf, self.feature_name)
-        model = models.create(**conf.models[self.model_name])
+        model = cls_loader.create(**conf.models[self.model_name])
         scorer = Metrics(conf)
 
         results = {
@@ -49,7 +49,7 @@ class FoldEstimator(luigi.Task):
         current_fold = folds[str(self.fold_id)]
 
         target_train = TargetFile.load(current_fold['train']['path'])
-        X_train = x_transf.fit(target_train)
+        X_train = x_transf.fit_transform(target_train)
         model.fit(X_train, target_train.target_values)
 
         if scorer.is_check_train:

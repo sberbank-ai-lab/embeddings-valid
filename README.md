@@ -63,9 +63,8 @@ There are predefined metrics like predict time or feature count.
 
 ## Feature preprocessing
 Some features requires preprocessing, you can configure it.
-
-## Missing values
-Filled by ...
+`preprocessing` config requires list if sklearn-like transformers with parameters.
+Preprocessing transformers used for all features for all models.
 
 ## Feature report
 Next releases. We can estimate features and provide some recommendations about preprocessing.

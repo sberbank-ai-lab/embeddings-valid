@@ -3,4 +3,5 @@ luigi
 numpy
 pandas
 pyhocon
-sklearn
+scipy
+scikit-learn==0.22.1
