@@ -115,3 +115,20 @@ PYTHONPATH='.' luigi --local-schedule \
 # check final report
 cat test_conf/crossval.txt
 ```
+
+# Install package
+```
+python3 setup.py install
+
+```
+
+# Build package (not used)
+Taken from [here](https://packaging.python.org/tutorials/packaging-projects/).
+
+```
+python3 -m pip install --user --upgrade setuptools wheel
+python3 setup.py sdist bdist_wheel
+
+# check dist directory
+
+```
