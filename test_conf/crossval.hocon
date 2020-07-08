@@ -48,21 +48,21 @@
     models: {
         linear: {
             enabled: true
-            type: LogisticRegression
+            type: sklearn.linear_model.LogisticRegression
             params: {
                 C: 0.1
             }
         },
         linear2: {
             enabled: true
-            type: LogisticRegression
+            type: sklearn.linear_model.LogisticRegression
             params: {
                 C: 1.0
             }
         },
         lgbm: {
-            enabled: false
-            type: LGBMClassifier,
+            enabled: true
+            type: lightgbm.LGBMClassifier,
             params: {
                 n_jobs: 6
             }
