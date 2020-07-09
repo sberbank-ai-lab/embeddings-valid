@@ -44,6 +44,7 @@ def t_pm(x, p=0.95):
 
 class ReportCollect(luigi.Task):
     conf = luigi.Parameter()
+    total_cpu_count = luigi.IntParameter()
 
     def requires(self):
         conf = Config.read_file(self.conf)
@@ -56,6 +57,7 @@ class ReportCollect(luigi.Task):
                         model_name=model_name,
                         feature_name=feature_name,
                         fold_id=fold_id,
+                        total_cpu_count=self.total_cpu_count,
                     )
 
     def output(self):

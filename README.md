@@ -95,6 +95,11 @@ Directory with config file is `root_path`. All paths described in config starts 
 `config.work_dir` is a directory where intermediate files and reports are saved.
 `config.report_file` is a file with final report.
 
+# Resources
+Required cpu count should be defined with model.
+Total cpu count limit and num_workers should be defined when application run.
+Estimation will works in parallel with cpu limit.
+
 # How to run
 ## Test example `train-test.hocon`
 ```

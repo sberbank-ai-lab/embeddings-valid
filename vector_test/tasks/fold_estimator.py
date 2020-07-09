@@ -17,6 +17,8 @@ class FoldEstimator(luigi.Task):
     feature_name = luigi.Parameter()
     fold_id = luigi.IntParameter()
 
+    total_cpu_count = luigi.IntParameter()
+
     def requires(self):
         return FoldSplitter(conf=self.conf)
 
@@ -30,11 +32,19 @@ class FoldEstimator(luigi.Task):
         path = os.path.join(conf.work_dir, fold_name, 'results.json')
         return luigi.LocalTarget(path)
 
+    @property
+    def resources(self):
+        conf = Config.read_file(self.conf)
+
+        cpu_count = conf.models[self.model_name]['cpu_count']
+        return {'cpu': round(cpu_count / self.total_cpu_count, 2)}
+
     def run(self):
         conf = Config.read_file(self.conf)
 
         x_transf = XTransformer(conf, self.feature_name)
-        model = cls_loader.create(**conf.models[self.model_name])
+        conf_model = conf.models[self.model_name]
+        model = cls_loader.create(conf_model['cls_name'], conf_model['params'])
         scorer = Metrics(conf)
 
         results = {
