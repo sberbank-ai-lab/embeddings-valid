@@ -75,6 +75,17 @@ Each part contains 3 sections for train, validation and optional for test files.
 Each section contains results for different feature files and it combinations.
 Each result contains mean with confidence intervals of N scores from N folds (or iterations).
 
+## Report format
+Each cell of final report have scores from N iteration.
+These scores transformed into report fields:
+ - mean
+ - t_pm: delta for confidence interval. Real mean is in interval (mean - t_pm, mean + t_pm) with 95% confidence
+ - t_int_l, t_int_h: lower and upper borders of confidence interval. Real mean is in interval (t_int_l, t_int_h) with 95% confidence
+ - std
+ - values: list of all N values
+ 
+You can choose fields which will be presented in reports and float_format of these values.
+
 ## Config
 All settings should be described in single configuration file.
 Report preparation splits on task and execution plan prepared based on config.
