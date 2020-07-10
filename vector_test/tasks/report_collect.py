@@ -73,16 +73,25 @@ class ReportCollect(luigi.Task):
         path = os.path.join(conf.root_path, conf['report_file'])
         return luigi.LocalTarget(path)
 
-    def run(self):
-        conf = Config.read_file(self.conf)
-
+    def load_results(self):
         parts = []
+        total_count = 0
+        error_count = 0
         for i in self.input():
+            total_count += 1
             with open(i.path, 'r') as f:
-                parts.extend(json.load(f))
+                scores = json.load(f)
+
+            if len(scores) == 0:
+                error_count += 1
+                os.remove(i.path)
+            parts.extend(scores)
 
         pd_report = json_normalize(parts)
+        return pd_report, total_count, error_count
 
+    @staticmethod
+    def format_report(pd_report):
         pd_report = pd_report.melt(id_vars=['model_name', 'feature_name', 'fold_id'], var_name='_metric')
         pd_report = pd.concat([
             pd_report,
@@ -92,6 +101,13 @@ class ReportCollect(luigi.Task):
         pd_report = pd_report.sort_values(['metric_name', 'model_name', 'feature_name', 'split_name', 'fold_id'])
         pd_report = pd_report.groupby(['metric_name', 'model_name', 'feature_name', 'split_name'])['value'].agg(
             ['mean', t_pm, t_int_l, t_int_h, 'std', values])
+        return pd_report, other_metrics
+
+    def run(self):
+        conf = Config.read_file(self.conf)
+
+        pd_report, total_count, error_count = self.load_results()
+        pd_report, other_metrics = self.format_report(pd_report)
 
         splits = []
         if conf['report.is_check_train']:
@@ -100,9 +116,10 @@ class ReportCollect(luigi.Task):
 
         with self.output().open('w') as f:
             self.print_header(f)
+            self.print_errors(f, total_count, error_count)
 
             for k in conf['report'].keys():
-                if k in ('is_check_train',):
+                if k in ('is_check_train', 'error_handling'):
                     continue
 
                 self.print_row_pandas(f, k, pd_report, splits, **conf['report'].get(k, {}))
@@ -122,6 +139,12 @@ Params:
     conf: "{self.conf}"
 """
         print(_text, file=f)
+
+    def print_errors(self, f, total_count, error_count):
+        print(f"Collected {total_count} files with {error_count} errors", file=f)
+        if error_count > 0:
+            print(f"Check logs for detail information", file=f)
+        print('', file=f)
 
     def print_row_pandas(self, f, metric_name, pd_report, splits,
                          keep_columns=None, float_format='{:.4f}'):

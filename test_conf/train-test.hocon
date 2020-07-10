@@ -92,6 +92,7 @@
 
     report: {
         is_check_train: true
+        error_handling: fail
 
         auroc: {
             float_format: "{:.3f}"

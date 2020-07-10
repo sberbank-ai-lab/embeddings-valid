@@ -11,6 +11,9 @@ class Config:
     VALID_TRAIN_TEST = 'train-test'
     VALID_CROSS_VAL = 'crossval'
 
+    ON_ERROR_FAIL = 'fail'
+    ON_ERROR_SKIP = 'skip'
+
     def __init__(self, conf=None, root_path=None):
         self.conf = conf
         self.root_path = root_path
@@ -108,3 +111,13 @@ class Config:
     @property
     def metrics(self):
         return self._read_enabled('metrics')
+
+    @property
+    def error_handling(self):
+        error_handling = self.conf['report.error_handling']
+        if error_handling == self.ON_ERROR_FAIL:
+            return self.ON_ERROR_FAIL
+        if error_handling == self.ON_ERROR_SKIP:
+            return self.ON_ERROR_SKIP
+
+        raise AttributeError(f'Unknown error_handling: "{error_handling}"')

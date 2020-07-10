@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 import luigi
@@ -46,6 +47,7 @@ class FoldEstimator(luigi.Task):
         conf_model = conf.models[self.model_name]
         model = cls_loader.create(conf_model['cls_name'], conf_model['params'])
         scorer = Metrics(conf)
+        on_error = conf.error_handling
 
         results = {
             'fold_id': self.fold_id,
@@ -58,18 +60,29 @@ class FoldEstimator(luigi.Task):
             folds = json.load(f)
         current_fold = folds[str(self.fold_id)]
 
-        target_train = TargetFile.load(current_fold['train']['path'])
-        X_train = x_transf.fit_transform(target_train)
-        model.fit(X_train, target_train.target_values)
+        try:
+            target_train = TargetFile.load(current_fold['train']['path'])
+            X_train = x_transf.fit_transform(target_train)
+            model.fit(X_train, target_train.target_values)
 
-        if scorer.is_check_train:
-            results['scores_train'] = scorer.score(model, X_train, target_train.target_values)
-        results['scores_valid'] = self.score_data(current_fold['valid']['path'], x_transf, model, scorer)
-        if current_fold['test'] is not None:
-            results['scores_test'] = self.score_data(current_fold['test']['path'], x_transf, model, scorer)
+            if scorer.is_check_train:
+                results['scores_train'] = scorer.score(model, X_train, target_train.target_values)
+            results['scores_valid'] = self.score_data(current_fold['valid']['path'], x_transf, model, scorer)
+            if current_fold['test'] is not None:
+                results['scores_test'] = self.score_data(current_fold['test']['path'], x_transf, model, scorer)
+
+        except BaseException:
+            if on_error == conf.ON_ERROR_SKIP:
+                results = None
+                logging.getLogger('luigi-interface').exception('Fail', stack_info=True)
+            elif on_error == conf.ON_ERROR_FAIL:
+                raise
+            else:
+                raise AssertionError(f'Unknown error_handling: "{on_error}"')
 
         with self.output().open('w') as f:
-            json.dump([results], f, indent=2)
+            results = [] if results is None else [results]
+            json.dump(results, f, indent=2)
 
     def score_data(self, target_path, x_transf, model, scorer):
         target_data = TargetFile.load(target_path)

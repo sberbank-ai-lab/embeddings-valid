@@ -114,6 +114,11 @@ Show the path where results are presented. This should be json file with such st
 ```
 These results will be collected and presented in report
 
+## Error handling
+Some folds can fail during execution. There are some strategies to handle it:
+  - fail: don't collect report until all folds will be correct
+  - skip: collect report without missing scores. Allow rerun failed task
+
 ## Config
 All settings should be described in single configuration file.
 Report preparation splits on task and execution plan prepared based on config.
