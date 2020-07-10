@@ -79,7 +79,7 @@
     metrics: {
         auroc: {
             enabled: true
-            score_func: roc_auc_score
+            score_func: sklearn.metrics.roc_auc_score
             scorer_params: {needs_proba: true}
 
         }

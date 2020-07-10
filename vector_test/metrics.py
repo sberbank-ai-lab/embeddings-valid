@@ -1,7 +1,9 @@
 import datetime
 
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, accuracy_score
 from sklearn.metrics import make_scorer
+
+from vector_test import cls_loader
 
 
 class Metrics:
@@ -11,9 +13,7 @@ class Metrics:
         self.metric_list = {k: self.get_scorer(**v) for k, v in conf.metrics.items()}
 
     def get_scorer(self, score_func, scorer_params):
-        score_f = globals().get(score_func, None)
-        if score_f is None:
-            raise AttributeError(f'Unknown score_func: "{score_func}"')
+        score_f = cls_loader.get_cls(score_func)
 
         return make_scorer(score_f, **scorer_params)
 
