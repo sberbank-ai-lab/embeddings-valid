@@ -67,6 +67,10 @@ class Config:
         return features
 
     @property
+    def external_scores(self):
+        return {k: v for k, v in self.conf['external_scores'].items()}
+
+    @property
     def models(self):
         return self._read_enabled('models')
 

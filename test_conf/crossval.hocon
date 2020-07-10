@@ -45,6 +45,8 @@
         }
     }
 
+    external_scores: {}
+
     preprocessing: [
         [sklearn.preprocessing.MaxAbsScaler, {}]
     ]

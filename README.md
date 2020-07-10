@@ -86,6 +86,34 @@ These scores transformed into report fields:
  
 You can choose fields which will be presented in reports and float_format of these values.
 
+## External scores
+You can estimate model quality yourself and show results in common report.
+Show the path where results are presented. This should be json file with such structure:
+```json
+[
+  {
+      "fold_id": <fold_num in range 0..N>,
+      "model_name": <model_name>,
+      "feature_name": <feature_name>,
+      "scores_valid": {
+        <results are here, column list depends on your task>
+        "auroc": 0.987654,
+        "auroc_score_time": 0,
+        "accuracy": 0.123456,
+        "accuracy_score_time": 0
+        "cnt_samples": 10,
+        "cnt_features": 4,
+      },
+      "scores_train": {
+          ...
+      },
+      "scores_test": {
+          ...
+      }
+]
+```
+These results will be collected and presented in report
+
 ## Config
 All settings should be described in single configuration file.
 Report preparation splits on task and execution plan prepared based on config.

@@ -10,6 +10,7 @@ import scipy.stats
 import luigi
 
 from vector_test.config import Config
+from vector_test.tasks.external_score import ExternalScore
 from vector_test.tasks.fold_estimator import FoldEstimator
 
 
@@ -59,6 +60,12 @@ class ReportCollect(luigi.Task):
                         fold_id=fold_id,
                         total_cpu_count=self.total_cpu_count,
                     )
+        for name, external_path in conf.external_scores.items():
+            yield ExternalScore(
+                conf=self.conf,
+                name=name,
+                external_path=external_path,
+            )
 
     def output(self):
         conf = Config.read_file(self.conf)
@@ -72,7 +79,7 @@ class ReportCollect(luigi.Task):
         parts = []
         for i in self.input():
             with open(i.path, 'r') as f:
-                parts.append(json.load(f))
+                parts.extend(json.load(f))
 
         pd_report = json_normalize(parts)
 

@@ -47,6 +47,11 @@
         }
     }
 
+    external_scores: {
+        0: "nn_target.json"
+        1: "nn_finetuning.json"
+    }
+
     preprocessing: []
 
     models: {

@@ -69,7 +69,7 @@ class FoldEstimator(luigi.Task):
             results['scores_test'] = self.score_data(current_fold['test']['path'], x_transf, model, scorer)
 
         with self.output().open('w') as f:
-            json.dump(results, f, indent=2)
+            json.dump([results], f, indent=2)
 
     def score_data(self, target_path, x_transf, model, scorer):
         target_data = TargetFile.load(target_path)
