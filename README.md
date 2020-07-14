@@ -151,34 +151,19 @@ Required cpu count should be defined with model.
 Total cpu count limit and num_workers should be defined when application run.
 Estimation will works in parallel with cpu limit.
 
-# How to run
-## Test example `train-test.hocon`
+# Git bundle distribution
 ```
-# delete old files
-rm -r test_conf/train-test.work/
-rm test_conf/train-test.txt
+# build server
+git bundle create vector_test.bundle HEAD master
 
-# run report collection
-PYTHONPATH='.' luigi --local-schedule \
-    --module vector_test ReportCollect \
-    --conf test_conf/train-test.hocon
+# transfer file vector_test.bundle to an other server
+# via email
 
-# check final report
-cat test_conf/train-test.txt
-```
-## Test example `crossval.hocon`
-```
-# delete old files
-rm -r test_conf/crossval.work/
-rm test_conf/crossval.txt
+# client server 1st time
+git clone vector_test.bundle vector_test
+# client server next time
+git pull
 
-# run report collection
-PYTHONPATH='.' luigi --local-schedule \
-    --module vector_test ReportCollect \
-    --conf test_conf/crossval.hocon
-
-# check final report
-cat test_conf/crossval.txt
 ```
 
 # Install package
@@ -196,4 +181,36 @@ python3 setup.py sdist bdist_wheel
 
 # check dist directory
 
+```
+
+# How to run
+```
+# run server first
+luigid
+
+```
+
+## Test example `train-test.hocon`
+```
+# delete old files
+rm -r test_conf/train-test.work/
+rm test_conf/train-test.txt
+
+# run report collection
+python -m vector_test --workers 4 --conf test_conf/train-test.hocon --total_cpu_count 10
+
+# check final report
+less test_conf/train-test.txt
+```
+## Test example `crossval.hocon`
+```
+# delete old files
+rm -r test_conf/crossval.work/
+rm test_conf/crossval.txt
+
+# run report collection
+python -m vector_test --workers 4 --conf test_conf/crossval.hocon --total_cpu_count 10
+
+# check final report
+less test_conf/crossval.txt
 ```
