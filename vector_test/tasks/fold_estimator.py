@@ -62,6 +62,7 @@ class FoldEstimator(luigi.Task):
 
         try:
             target_train = TargetFile.load(current_fold['train']['path'])
+            target_train = self.apply_target_options(target_train)
             X_train = x_transf.fit_transform(target_train)
             model.fit(X_train, target_train.target_values)
 
@@ -88,3 +89,27 @@ class FoldEstimator(luigi.Task):
         target_data = TargetFile.load(target_path)
         X_data = x_transf.transform(target_data)
         return scorer.score(model, X_data, target_data.target_values)
+
+    def apply_target_options(self, df_target):
+        conf = Config.read_file(self.conf)
+        target_options = conf.features[self.feature_name]['target_options']
+        if 'labeled_amount' in target_options:
+            df_target = self.reduce_labeled_amount(
+                df_target,
+                target_options['labeled_amount'],
+                target_options['random_state'],
+            )
+        return df_target
+
+    @staticmethod
+    def reduce_labeled_amount(df_target, labeled_amount, random_state):
+        if type(labeled_amount) is float and labeled_amount <= 1.0:
+            new_target = df_target.clone_schema()
+            new_target.df = df_target.df.sample(frac=labeled_amount, random_state=random_state)
+            return new_target
+        if type(labeled_amount) is int:
+            new_target = df_target.clone_schema()
+            new_target.df = df_target.df.sample(n=labeled_amount, random_state=random_state)
+            return new_target
+
+        raise AttributeError(f'wrong format of labeled_amount ({labeled_amount}), type: {type(labeled_amount)}')

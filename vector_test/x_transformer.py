@@ -44,5 +44,8 @@ class XTransformer:
 
     def load_features(self):
         current_features = self.conf.features[self.feature_name]
-        self.feature_list = [FeatureFile.read_table(self.conf, **f)
-                             for f in current_features['data_files']]
+        read_params = current_features['read_params']
+        if type(read_params) is not list:
+            read_params = [read_params]
+
+        self.feature_list = [FeatureFile.read_table(self.conf, **f) for f in read_params]

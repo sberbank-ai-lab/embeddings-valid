@@ -23,7 +23,14 @@ compare it with features from an other file or mix features from many files and 
 
 Id used for join feature and target file. Join is always left: `target` left join `features` on `id`.
 Missing values filled according preprocessing strategy.
- 
+
+## Target options
+You can specify additional options for each feature file (of set of files).
+You can estimate one feature file with different target options.
+Just make one more records in `feature` config with the same file path and different name and options.
+- `labeled_amount`, this option reduce amount of labeled data in train.
+    Set it as integer (record count) or float (rate of total)
+
 ## Validation schema
 ### Cross validation setup
 Only one target file is provided. This tool split it on N folds and use each one for validation.

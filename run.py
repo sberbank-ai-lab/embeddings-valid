@@ -9,7 +9,7 @@ PYTHONPATH='.' luigi \
     --workers 5 \
     --module vector_test ReportCollect \
     --conf test_conf/train-test.hocon --total-cpu-count 18
-cat test_conf/train-test.txt
+less test_conf/train-test.txt
 
 cd /mnt/data/kireev/pycharm_1_vec_test/
 rm -r test_conf/crossval.work/; rm test_conf/crossval.txt

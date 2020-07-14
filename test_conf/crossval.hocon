@@ -26,22 +26,24 @@
         random_state: 42
     }
 
-    data_files: {
+    features: {
         01_baseline: {
             enabled: true
-            file_name: ../test_data/features_0.csv
-            rename_cols: {uid: id}
+            read_params: {file_name: "../test_data/features_0.csv", rename_cols: {uid: id}}
+            target_options: {}
         },
         02_embeddings: {
             enabled: true
-            file_name: ../test_data/features_1.csv
+            read_params: {file_name: "../test_data/features_1.csv"}
+            target_options: {}
         }
-    }
-
-    features: {
         03_both: {
             enabled: true
-            data_files: [01_baseline, 02_embeddings]
+            read_params: [
+                {file_name: "../test_data/features_0.csv", rename_cols: {uid: id}}
+                {file_name: "../test_data/features_1.csv"}
+            ]
+            target_options: {}
         }
     }
 

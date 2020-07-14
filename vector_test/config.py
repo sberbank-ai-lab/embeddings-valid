@@ -57,17 +57,8 @@ class Config:
         return os.path.join(self.root_path, self.conf['environment.work_dir'])
 
     @property
-    def data_files(self):
-        return self._read_enabled('data_files')
-
-    @property
     def features(self):
-        data_files = self.data_files
-        features = self._read_enabled('features')
-        features = {name: {'data_files': [data_files[k] for k in params['data_files']]}
-                    for name, params in features.items()}
-        features.update({name: {'data_files': [x]} for name, x in data_files.items()})
-        return features
+        return self._read_enabled('features')
 
     @property
     def external_scores(self):
