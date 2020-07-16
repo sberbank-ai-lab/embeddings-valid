@@ -5,12 +5,12 @@ from vector_test.file_reader import FeatureFile
 
 
 class XTransformer:
-    def __init__(self, conf, feature_name):
+    def __init__(self, conf, feature_name, preprocessing):
         self.conf = conf
         self.feature_name = feature_name
 
         self.preprocessing = None
-        self.load_preprocessors()
+        self.load_preprocessors(preprocessing)
 
         self.feature_list = None
         self.load_features()
@@ -36,9 +36,9 @@ class XTransformer:
             X = p.transform(X)
         return X
 
-    def load_preprocessors(self):
+    def load_preprocessors(self, preprocessing):
         self.preprocessing = []
-        for t_name, params in self.conf['preprocessing']:
+        for t_name, params in preprocessing:
             p = cls_loader.create(t_name, params)
             self.preprocessing.append(p)
 

@@ -49,10 +49,6 @@
 
     external_scores: {}
 
-    preprocessing: [
-        [sklearn.preprocessing.MaxAbsScaler, {}]
-    ]
-
     models: {
         linear: {
             enabled: true
@@ -61,6 +57,9 @@
                 C: 0.1
             },
             cpu_count: 1
+            preprocessing: [
+                [sklearn.preprocessing.MaxAbsScaler, {}]
+            ]
         },
         linear2: {
             enabled: true
@@ -69,6 +68,9 @@
                 C: 1.0
             },
             cpu_count: 1
+            preprocessing: [
+                [sklearn.preprocessing.MaxAbsScaler, {}]
+            ]
         },
         lgbm: {
             enabled: true
@@ -77,6 +79,7 @@
                 n_jobs: 6
             },
             cpu_count: 6
+            preprocessing: []
         }
     }
 

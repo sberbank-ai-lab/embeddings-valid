@@ -43,7 +43,7 @@ class FoldEstimator(luigi.Task):
     def run(self):
         conf = Config.read_file(self.conf)
 
-        x_transf = XTransformer(conf, self.feature_name)
+        x_transf = XTransformer(conf, self.feature_name, conf.models[self.model_name]['preprocessing'])
         conf_model = conf.models[self.model_name]
         model = cls_loader.create(conf_model['cls_name'], conf_model['params'])
         scorer = Metrics(conf)
