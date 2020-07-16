@@ -52,7 +52,7 @@ class BaseReader:
         raise NotImplementedError(f'Not implemented for "{ext}" file type')
 
     @classmethod
-    def read_table(cls, conf, file_name, rename_cols=None, **kwargs):
+    def read_table(cls, conf, file_name, rename_cols=None, drop_cols=None, **kwargs):
         self = cls(conf)
         columns = self.keep_columns()
 
@@ -60,6 +60,8 @@ class BaseReader:
         self.df = self._read_pd(self.source_path)
         if rename_cols is not None:
             self.df = self.df.rename(columns=rename_cols)
+        if drop_cols is not None:
+            self.df = self.df.drop(columns=drop_cols)
 
         if columns is not None:
             self.df = self.df[columns]

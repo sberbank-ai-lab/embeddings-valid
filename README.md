@@ -214,3 +214,15 @@ python -m vector_test --workers 4 --conf test_conf/crossval.hocon --total_cpu_co
 # check final report
 less test_conf/crossval.txt
 ```
+
+# TODO
+- preprocessing on model level
+
+- extended timing:
+    - file read time
+    - train time
+  
+- features check:
+    - is category
+    - is datetime
+    - is target col in feature (by name or by content similarity)
