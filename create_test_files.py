@@ -62,6 +62,7 @@ def create_separate_files(n_train=10000, n_valid=1000, n_test=1000, num_features
     df_target = (df_target > 0.5).astype(int)
     df_target = pd.DataFrame({'id': all_ids, 'y': df_target}).sort_values('id')
     to_csv(df_target, 'target.csv')
+    print('Mean target: {:.3f}'.format(df_target['y'].mean()))
 
 
 def create_single_file(
@@ -85,7 +86,7 @@ def create_single_file(
     columns = {'uid': rs.choice(uids, n_rows, replace=False)}
 
     # random error
-    target_column = [rs.randn(n_rows)]
+    target_column = [rs.randn(n_rows) * 10]
 
     for i in range(num_features):
         target_values = rs.randn(n_rows).round(2)
@@ -125,9 +126,10 @@ def create_single_file(
     target_values = np.concatenate([c.reshape(-1, 1) for c in target_column], axis=1)
     target_values *= rs.rand(1, target_values.shape[1])
     target_values = target_values.sum(axis=1)
-    target_values = (target_values > 1.0).astype(int)
+    target_values = (target_values > -0.1).astype(int)
     df_baseline['target'] = target_values
     to_csv(df_baseline, 'baseline.csv')
+    print('Mean target: {:.3f}'.format(df_baseline['target'].mean()))
 
 
 if __name__ == '__main__':

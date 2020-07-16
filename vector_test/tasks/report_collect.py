@@ -112,7 +112,9 @@ class ReportCollect(luigi.Task):
         splits = []
         if conf['report.is_check_train']:
             splits.append('scores_train')
-        splits.extend(['scores_valid', 'scores_test'])
+        splits.append('scores_valid')
+        if 'test_id' in conf['split']:
+            splits.append('scores_test')
 
         with self.output().open('w') as f:
             self.print_header(f)

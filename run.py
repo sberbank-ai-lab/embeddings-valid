@@ -26,6 +26,13 @@ PYTHONPATH="/mnt/data/kireev/pycharm_1_vec_test" \
 less test_conf/crossval.txt
 
 
+cd /mnt/data/kireev/pycharm_1_vec_test/
+rm -r test_conf/single-file.work/; rm test_conf/single-file.txt
+PYTHONPATH="/mnt/data/kireev/pycharm_1_vec_test" \
+    python -m vector_test --workers 5 --conf test_conf/single-file.hocon --total_cpu_count 18
+less test_conf/single-file.txt
+
+
 cd /mnt/data/kireev/pycharm_1/dltranz/experiments/scenario_gender/
 rm -r conf/vector_test.work/; rm results/vector_test.txt
 PYTHONPATH="/mnt/data/kireev/pycharm_1_vec_test"   \
