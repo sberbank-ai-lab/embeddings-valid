@@ -1,7 +1,10 @@
+import datetime
+
 import pandas as pd
 
 from vector_test import cls_loader
 from vector_test.file_reader import FeatureFile
+from vector_test.preprocessing.category_encoder import CategoryEncoder
 
 
 class XTransformer:
@@ -13,6 +16,7 @@ class XTransformer:
         self.load_preprocessors(preprocessing)
 
         self.feature_list = None
+        self.load_time = None
         self.load_features()
 
     def get_df_features(self, df_target):
@@ -43,9 +47,20 @@ class XTransformer:
             self.preprocessing.append(p)
 
     def load_features(self):
+        _start = datetime.datetime.now()
         current_features = self.conf.features[self.feature_name]
         read_params = current_features['read_params']
         if type(read_params) is not list:
             read_params = [read_params]
 
         self.feature_list = [FeatureFile.read_table(self.conf, **f) for f in read_params]
+        self.load_time = datetime.datetime.now() - _start
+
+    def get_feature_fit_info(self):
+        info = []
+        for p in self.preprocessing:
+            if type(p) is CategoryEncoder:
+                info.append(f'Encoded cols: {p.cols_for_encoding}')
+                info.append(f'Dropped cols: {p.cols_for_drop}')
+        return ' '.join(info)
+

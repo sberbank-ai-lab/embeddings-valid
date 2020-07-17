@@ -102,23 +102,17 @@
         is_check_train: true
         error_handling: fail
 
-        auroc: {
-            float_format: "{:.3f}"
-            keep_columns: ["mean", "t_pm", values]
-        }
+        auroc: {float_format: "{:.3f}", keep_columns: ["mean", "t_pm", values]}
 
-        cnt_features: {
-            float_format: "{:.0f}"
-            keep_columns: ["mean"]
-        }
+        cnt_features: {float_format: "{:.0f}", keep_columns: ["mean"]}
+        cnt_samples: {float_format: "{:9,.0f}", keep_columns: ["mean"]}
 
-        cnt_samples: {
-            float_format: "{:9,.0f}"
-            keep_columns: ["mean"]
-        }
+        feature_load_time: {float_format: "{:,.1f}"}
+        train_fit_transform_time: {float_format: "{:,.1f}"}
+        feature_transform_time: {float_format: "{:,.1f}"}
+        train_time: {float_format: "{:,.1f}"}
+        auroc_score_time {float_format: "{:,.1f}"}
 
-        auroc_score_time {
-            float_format: "{:,.1f}"
-        }
+        feature_fit_info: {keep_columns: ["first"]}
     }
 }

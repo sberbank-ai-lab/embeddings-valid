@@ -216,12 +216,6 @@ less test_conf/crossval.txt
 ```
 
 # TODO
-- preprocessing on model level
-
-- extended timing:
-    - file read time
-    - train time
-  
 - features check:
     - is category
     - is datetime

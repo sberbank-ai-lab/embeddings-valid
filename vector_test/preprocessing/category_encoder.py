@@ -40,12 +40,12 @@ class CategoryEncoder:
 
             unique_rate = n_unique / len(df)
             if unique_rate >= self.max_unique_rate:
-                self.cols_for_drop[col] = 'Droped with unique_rate >= max_unique_rate' + \
+                self.cols_for_drop[col] = 'Droped with unique_rate >= max_unique_rate ' + \
                                           f'({unique_rate:.3f} >= {self.max_unique_rate:.3f})'
 
             coverage_rate = df[col].value_counts(normalize=True).cumsum().iloc[:self.max_features].iloc[-1]
             if coverage_rate < self.min_coverage_rate:
-                self.cols_for_drop[col] = 'Droped with coverage_rate < min_coverage_rate' + \
+                self.cols_for_drop[col] = 'Droped with coverage_rate < min_coverage_rate ' + \
                                           f'({coverage_rate:.3f} < {self.min_coverage_rate:.3f})'
 
         self.cols_for_encoding = [c for c in self.cols_for_encoding if c not in self.cols_for_drop]

@@ -14,12 +14,14 @@ from vector_test.tasks.external_score import ExternalScore
 from vector_test.tasks.fold_estimator import FoldEstimator
 
 
-def values(x):
-    return x.tolist()
-
-
-def print_list(x, float_format):
+def print_float_list(x, float_format):
+    x = x.tolist()
     return '[' + ' '.join([float_format.format(i) for i in x]) + ']'
+
+
+def print_str_list(x):
+    x = x.tolist()
+    return '[' + ' '.join(x) + ']'
 
 
 def t_interval(x, p=0.95):
@@ -46,6 +48,8 @@ def t_pm(x, p=0.95):
 class ReportCollect(luigi.Task):
     conf = luigi.Parameter()
     total_cpu_count = luigi.IntParameter()
+
+    f = None
 
     def requires(self):
         conf = Config.read_file(self.conf)
@@ -87,27 +91,18 @@ class ReportCollect(luigi.Task):
                 os.remove(i.path)
             parts.extend(scores)
 
-        pd_report = json_normalize(parts)
-        return pd_report, total_count, error_count
-
-    @staticmethod
-    def format_report(pd_report):
+        pd_report = json_normalize(parts, max_level=1)
         pd_report = pd_report.melt(id_vars=['model_name', 'feature_name', 'fold_id'], var_name='_metric')
         pd_report = pd.concat([
             pd_report,
-            pd_report['_metric'].str.extract(r'(?P<split_name>\w+)\.(?P<metric_name>\w+)'),
+            pd_report['_metric'].str.extract(r'(?P<split_name>\w+)\.(?P<metric_name>[\w\.]+)'),
         ], axis=1)
-        other_metrics = sorted(pd_report['metric_name'].unique().tolist())
-        pd_report = pd_report.sort_values(['metric_name', 'model_name', 'feature_name', 'split_name', 'fold_id'])
-        pd_report = pd_report.groupby(['metric_name', 'model_name', 'feature_name', 'split_name'])['value'].agg(
-            ['mean', t_pm, t_int_l, t_int_h, 'std', values])
-        return pd_report, other_metrics
+        pd_report = pd_report.set_index(['split_name', 'metric_name', 'model_name', 'feature_name', 'fold_id'])['value']
+        pd_report = pd_report.sort_index()
+        return pd_report, total_count, error_count
 
     def run(self):
         conf = Config.read_file(self.conf)
-
-        pd_report, total_count, error_count = self.load_results()
-        pd_report, other_metrics = self.format_report(pd_report)
 
         splits = []
         if conf['report.is_check_train']:
@@ -116,67 +111,105 @@ class ReportCollect(luigi.Task):
         if 'test_id' in conf['split']:
             splits.append('scores_test')
 
+        pd_report, total_count, error_count = self.load_results()
+        pd_split_report = pd_report.loc[splits].unstack(0).reindex(columns=splits)
+        pd_process_report = pd_report.loc[['process_info']].unstack(0)
+
+        metric_index = {
+            **{m: pd_split_report for m in pd_split_report.index.get_level_values(0).unique()},
+            **{m: pd_process_report for m in pd_process_report.index.get_level_values(0).unique()}
+        }
+
         with self.output().open('w') as f:
-            self.print_header(f)
-            self.print_errors(f, total_count, error_count)
+            self.f = f
+
+            self.print_header()
+            self.print_errors(total_count, error_count)
 
             for k in conf['report'].keys():
                 if k in ('is_check_train', 'error_handling'):
                     continue
+                self.print_row_pandas(k, metric_index[k].loc[k], **conf['report'].get(k, {}))
+                del metric_index[k]
 
-                self.print_row_pandas(f, k, pd_report, splits, **conf['report'].get(k, {}))
-                other_metrics = [m for m in other_metrics if m != k]
-
-            if len(other_metrics) > 0:
+            if len(metric_index) > 0:
                 print('Other metrics:', file=f)
-                for k in other_metrics:
-                    self.print_row_pandas(f, k, pd_report, splits)
+                for k in metric_index:
+                    self.print_row_pandas(k, metric_index[k].loc[k])
 
-            self.print_footer(f)
+            self.print_footer()
 
-    def print_header(self, f):
-        self.print_line(f)
+    def print_header(self):
+        self.print_line()
         _text = f"""Vector testing report
 Params:
     conf: "{self.conf}"
 """
-        print(_text, file=f)
+        print(_text, file=self.f)
 
-    def print_errors(self, f, total_count, error_count):
-        print(f"Collected {total_count} files with {error_count} errors", file=f)
+    def print_errors(self, total_count, error_count):
+        print(f"Collected {total_count} files with {error_count} errors", file=self.f)
         if error_count > 0:
             print(f"Check logs for detail information", file=f)
-        print('', file=f)
+        print('', file=self.f)
 
-    def print_row_pandas(self, f, metric_name, pd_report, splits,
+    def print_row_pandas(self, metric_name, df_row,
                          keep_columns=None, float_format='{:.4f}'):
-        self.print_line(f)
+        self.print_line()
         with pd.option_context(
                 'display.float_format', float_format.format,
                 'display.max_columns', None,
                 'display.max_rows', None,
                 'display.expand_frame_repr', False,
-                'display.max_colwidth', 200,
+                'display.max_colwidth', None,
         ):
-            print(f'Metric: "{metric_name}"', file=f)
+            def values(x):
+                if is_numeric:
+                    return print_float_list(x, float_format=float_format)
+                else:
+                    return print_str_list(x)
+
+            m_list = {
+                'mean': 'mean',
+                't_pm': t_pm,
+                't_int_l': t_int_l,
+                't_int_h': t_int_h,
+                'std': 'std',
+                'values': values,
+                'first': 'first'
+            }
+            m_default_numeric_list = ['mean', 't_pm', 't_int_l', 't_int_h', 'std', 'values']
+            m_default_str_list = ['first', 'values']
+
+            print(f'Metric: "{metric_name}"', file=self.f)
+            df = df_row.copy()
+
+            try:
+                for col in df_row.columns:
+                    df[col] = pd.to_numeric(df_row[col])
+                is_numeric = True
+            except Exception:
+                df = df_row.astype(str)
+                is_numeric = False
+
             if keep_columns is None:
-                keep_columns = pd_report.columns
+                if is_numeric:
+                    keep_columns = m_default_numeric_list
+                else:
+                    keep_columns = m_default_str_list
 
-            df = pd_report.loc[metric_name].unstack().swaplevel(axis=1).reindex(
-                columns=[(l0, l1) for l0 in splits for l1 in keep_columns])
-            if 'values' in keep_columns:
-                for l0 in splits:
-                    df[(l0, 'values')] = df[(l0, 'values')].apply(partial(print_list, float_format=float_format))
+            metrics = [m_list[i] for i in keep_columns]
 
-            print(df, file=f)
-            print('', file=f)
+            df = df.groupby(['model_name', 'feature_name']).agg(metrics)
 
+            print(df, file=self.f)
+            print('', file=self.f)
 
-    def print_footer(self, f):
-        self.print_line(f)
+    def print_footer(self):
+        self.print_line()
         _text = f"End of report.     Current time: {datetime.datetime.now():%Y-%m-%d %H:%M:%S}"
-        print(_text, file=f)
-        self.print_line(f)
+        print(_text, file=self.f)
+        self.print_line()
 
-    def print_line(self, f):
-        print('-' * 120, file=f)
+    def print_line(self):
+        print('-' * 120, file=self.f)

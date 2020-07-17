@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import os
@@ -63,14 +64,27 @@ class FoldEstimator(luigi.Task):
         try:
             target_train = TargetFile.load(current_fold['train']['path'])
             target_train = self.apply_target_options(target_train)
+
+            _start = datetime.datetime.now()
             X_train = x_transf.fit_transform(target_train)
+            train_fit_transform_time = datetime.datetime.now() - _start
+
+            _start = datetime.datetime.now()
             model.fit(X_train, target_train.target_values)
+            train_time = datetime.datetime.now() - _start
 
             if scorer.is_check_train:
                 results['scores_train'] = scorer.score(model, X_train, target_train.target_values)
             results['scores_valid'] = self.score_data(current_fold['valid']['path'], x_transf, model, scorer)
             if current_fold['test'] is not None:
                 results['scores_test'] = self.score_data(current_fold['test']['path'], x_transf, model, scorer)
+
+            results['process_info'] = {
+                'feature_fit_info': x_transf.get_feature_fit_info(),
+                'feature_load_time': x_transf.load_time.seconds,
+                'train_fit_transform_time': train_fit_transform_time.seconds,
+                'train_time': train_time.seconds,
+            }
 
         except BaseException:
             if on_error == conf.ON_ERROR_SKIP:
@@ -87,8 +101,14 @@ class FoldEstimator(luigi.Task):
 
     def score_data(self, target_path, x_transf, model, scorer):
         target_data = TargetFile.load(target_path)
+
+        _start = datetime.datetime.now()
         X_data = x_transf.transform(target_data)
-        return scorer.score(model, X_data, target_data.target_values)
+        feature_transform_time = datetime.datetime.now() - _start
+
+        score = scorer.score(model, X_data, target_data.target_values)
+        score['feature_transform_time'] = feature_transform_time.seconds
+        return score
 
     def apply_target_options(self, df_target):
         conf = Config.read_file(self.conf)
