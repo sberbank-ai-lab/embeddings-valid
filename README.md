@@ -1,4 +1,4 @@
-# Vector test project
+# Representation generation and testing project
 Estimate your feature vector quality on downstream task
 
 # Concepts
