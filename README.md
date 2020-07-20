@@ -188,6 +188,8 @@ python3 setup.py sdist bdist_wheel
 # run server first
 luigid
 
+# for local run without central server add `--local_scheduler` option to `python -m vector_test` args
+
 ```
 
 ## Test example `train-test.hocon`
