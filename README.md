@@ -1,4 +1,4 @@
-# Vector test project
+# Embeddings validation project
 Estimate your feature vector quality on downstream task
 
 # Concepts
