@@ -99,24 +99,25 @@ Show the path where results are presented. This should be json file with such st
 ```json
 [
   {
-      "fold_id": <fold_num in range 0..N>,
-      "model_name": <model_name>,
-      "feature_name": <feature_name>,
+      "fold_id": "<fold_num in range 0..N>",
+      "model_name": "<model_name>",
+      "feature_name": "<feature_name>",
       "scores_valid": {
-        <results are here, column list depends on your task>
+        "<results are here, column list depends on your task>": "<values>",
         "auroc": 0.987654,
         "auroc_score_time": 0,
         "accuracy": 0.123456,
-        "accuracy_score_time": 0
+        "accuracy_score_time": 0,
         "cnt_samples": 10,
-        "cnt_features": 4,
+        "cnt_features": 4
       },
       "scores_train": {
-          ...
+          "<the same keys>": "<values>"
       },
       "scores_test": {
-          ...
+          "<the same keys>": "<values>"
       }
+  }
 ]
 ```
 These results will be collected and presented in report
@@ -215,6 +216,19 @@ python -m vector_test --workers 4 --conf test_conf/crossval.hocon --total_cpu_co
 
 # check final report
 less test_conf/crossval.txt
+```
+
+## Test example `single-file.hocon`
+```
+# delete old files
+rm -r test_conf/single-file.work/
+rm test_conf/single-file.txt
+
+# run report collection
+python -m vector_test --workers 4 --conf test_conf/single-file.hocon --total_cpu_count 10
+
+# check final report
+less test_conf/single-file.txt
 ```
 
 # TODO
