@@ -9,9 +9,9 @@ import scipy.stats
 
 import luigi
 
-from vector_test.config import Config
-from vector_test.tasks.external_score import ExternalScore
-from vector_test.tasks.fold_estimator import FoldEstimator
+from embeddings_validation.config import Config
+from embeddings_validation.tasks.external_score import ExternalScore
+from embeddings_validation.tasks.fold_estimator import FoldEstimator
 
 
 def print_float_list(x, float_format):

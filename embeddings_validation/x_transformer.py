@@ -2,9 +2,9 @@ import datetime
 
 import pandas as pd
 
-from vector_test import cls_loader
-from vector_test.file_reader import FeatureFile
-from vector_test.preprocessing.category_encoder import CategoryEncoder
+from embeddings_validation import cls_loader
+from embeddings_validation.file_reader import FeatureFile
+from embeddings_validation.preprocessing.category_encoder import CategoryEncoder
 
 
 class XTransformer:

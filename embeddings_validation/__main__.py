@@ -1,7 +1,7 @@
 import luigi
 import argparse
 
-from vector_test import ReportCollect
+from embeddings_validation import ReportCollect
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

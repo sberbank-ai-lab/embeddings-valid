@@ -1,1 +1,0 @@
-from vector_test.tasks.report_collect import ReportCollect

@@ -3,7 +3,7 @@ import datetime
 from sklearn.metrics import roc_auc_score, accuracy_score
 from sklearn.metrics import make_scorer
 
-from vector_test import cls_loader
+from embeddings_validation import cls_loader
 
 
 class Metrics:

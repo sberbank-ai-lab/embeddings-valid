@@ -5,12 +5,12 @@ import os
 
 import luigi
 
-from vector_test.config import Config
-from vector_test.file_reader import TargetFile
-from vector_test.metrics import Metrics
-from vector_test import cls_loader
-from vector_test.tasks.fold_splitter import FoldSplitter
-from vector_test.x_transformer import XTransformer
+from embeddings_validation.config import Config
+from embeddings_validation.file_reader import TargetFile
+from embeddings_validation.metrics import Metrics
+from embeddings_validation import cls_loader
+from embeddings_validation.tasks.fold_splitter import FoldSplitter
+from embeddings_validation.x_transformer import XTransformer
 
 
 class FoldEstimator(luigi.Task):

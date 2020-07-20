@@ -4,7 +4,7 @@ import os
 
 import luigi
 
-from vector_test.config import Config
+from embeddings_validation.config import Config
 
 
 class ExternalScore(luigi.Task):

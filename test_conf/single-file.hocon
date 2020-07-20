@@ -55,7 +55,7 @@
             },
             cpu_count: 1
             preprocessing: [
-                [vector_test.preprocessing.category_encoder.CategoryEncoder, {}]
+                [embeddings_validation.preprocessing.category_encoder.CategoryEncoder, {}]
                 [sklearn.impute.SimpleImputer, {strategy: median}]
             ]
         }
@@ -67,7 +67,7 @@
             },
             cpu_count: 6
             preprocessing: [
-                [vector_test.preprocessing.category_encoder.CategoryEncoder, {}]
+                [embeddings_validation.preprocessing.category_encoder.CategoryEncoder, {}]
             ]
         }
         xgb: {
@@ -78,7 +78,7 @@
             },
             cpu_count: 4
             preprocessing: [
-                [vector_test.preprocessing.category_encoder.CategoryEncoder, {}]
+                [embeddings_validation.preprocessing.category_encoder.CategoryEncoder, {}]
             ]
         }
     }

@@ -5,8 +5,8 @@ import json
 
 from sklearn.model_selection import StratifiedKFold, KFold
 
-from vector_test.config import Config
-from vector_test.file_reader import TargetFile, IdFile
+from embeddings_validation.config import Config
+from embeddings_validation.file_reader import TargetFile, IdFile
 
 
 class FoldSplitter(luigi.Task):

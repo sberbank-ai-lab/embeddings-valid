@@ -11,7 +11,7 @@ setuptools.setup(
     description="Estimate your feature vector quality on downstream task",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/sberbank-ai-lab/vector_test",
+    url="https://github.com/sberbank-ai-lab/embeddings-valid",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

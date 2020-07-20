@@ -141,7 +141,7 @@ Report preparation splits on task and execution plan prepared based on config.
 
 
 # Environment
-`vector_test` module should be available for current python.
+`embeddings_validation` module should be available for current python.
 
 Directory with config file is `root_path`. All paths described in config starts from `root_path`.
 `config.work_dir` is a directory where intermediate files and reports are saved.
@@ -155,13 +155,13 @@ Estimation will works in parallel with cpu limit.
 # Git bundle distribution
 ```
 # build server
-git bundle create vector_test.bundle HEAD master
+git bundle create embeddings_validation.bundle HEAD master
 
-# transfer file vector_test.bundle to an other server
+# transfer file embeddings_validation.bundle to an other server
 # via email
 
 # client server 1st time
-git clone vector_test.bundle vector_test
+git clone embeddings_validation.bundle embeddings_validation
 # client server next time
 git pull
 
@@ -189,7 +189,7 @@ python3 setup.py sdist bdist_wheel
 # run server first
 luigid
 
-# for local run without central server add `--local_scheduler` option to `python -m vector_test` args
+# for local run without central server add `--local_scheduler` option to `python -m embeddings_validation` args
 
 ```
 
@@ -200,7 +200,7 @@ rm -r test_conf/train-test.work/
 rm test_conf/train-test.txt
 
 # run report collection
-python -m vector_test --workers 4 --conf test_conf/train-test.hocon --total_cpu_count 10
+python -m embeddings_validation --workers 4 --conf test_conf/train-test.hocon --total_cpu_count 10
 
 # check final report
 less test_conf/train-test.txt
@@ -212,7 +212,7 @@ rm -r test_conf/crossval.work/
 rm test_conf/crossval.txt
 
 # run report collection
-python -m vector_test --workers 4 --conf test_conf/crossval.hocon --total_cpu_count 10
+python -m embeddings_validation --workers 4 --conf test_conf/crossval.hocon --total_cpu_count 10
 
 # check final report
 less test_conf/crossval.txt
@@ -225,7 +225,7 @@ rm -r test_conf/single-file.work/
 rm test_conf/single-file.txt
 
 # run report collection
-python -m vector_test --workers 4 --conf test_conf/single-file.hocon --total_cpu_count 10
+python -m embeddings_validation --workers 4 --conf test_conf/single-file.hocon --total_cpu_count 10
 
 # check final report
 less test_conf/single-file.txt
