@@ -43,21 +43,24 @@ class BaseReader:
         return file
 
     @staticmethod
-    def _read_pd(path):
+    def _read_pd(path, read_args):
         ext = os.path.splitext(path)[1]
         if ext == '.csv':
-            return pd.read_csv(path)
+            return pd.read_csv(path, **read_args)
         if ext == '.pickle':
-            return pd.read_pickle(path)
+            return pd.read_pickle(path, **read_args)
         raise NotImplementedError(f'Not implemented for "{ext}" file type')
 
     @classmethod
-    def read_table(cls, conf, file_name, rename_cols=None, drop_cols=None, **kwargs):
+    def read_table(cls, conf, file_name, rename_cols=None, drop_cols=None, read_args=None, **kwargs):
+        if read_args is None:
+            read_args = {}
+
         self = cls(conf)
         columns = self.keep_columns()
 
         self.source_path = os.path.join(conf.root_path, file_name)
-        self.df = self._read_pd(self.source_path)
+        self.df = self._read_pd(self.source_path, read_args)
         if rename_cols is not None:
             self.df = self.df.rename(columns=rename_cols)
         if drop_cols is not None:
