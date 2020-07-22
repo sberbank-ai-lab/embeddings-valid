@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="vector-test",
+    name="embeddings-validation",
     version="0.0.1",
     author="Ivan Kireev",
     author_email="ivkireev@yandex.ru",
