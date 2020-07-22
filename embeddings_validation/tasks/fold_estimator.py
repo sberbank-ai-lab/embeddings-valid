@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import math
 import os
 
 import luigi
@@ -39,7 +40,7 @@ class FoldEstimator(luigi.Task):
         conf = Config.read_file(self.conf)
 
         cpu_count = conf.models[self.model_name]['cpu_count']
-        return {'cpu': round(cpu_count / self.total_cpu_count, 2)}
+        return {'cpu': math.ceil(cpu_count / self.total_cpu_count * 100) / 100}
 
     def run(self):
         conf = Config.read_file(self.conf)
