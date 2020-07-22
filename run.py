@@ -16,7 +16,7 @@ less test_conf/train-test.txt
 cd /mnt/data/kireev/pycharm_1_vec_test/
 rm -r test_conf/train-test.work/; rm test_conf/train-test.txt
 PYTHONPATH="/mnt/data/kireev/pycharm_1_vec_test" \
-    python -m embeddings_validation --workers 5 --conf test_conf/train-test.hocon --total_cpu_count 18
+    python -m embeddings_validation --workers 5 --conf test_conf/train-test.hocon --total_cpu_count 6
 less test_conf/train-test.txt
 
 cd /mnt/data/kireev/pycharm_1_vec_test/

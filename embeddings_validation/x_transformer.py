@@ -1,10 +1,15 @@
 import datetime
+import logging
+import re
 
 import pandas as pd
 
 from embeddings_validation import cls_loader
 from embeddings_validation.file_reader import FeatureFile
 from embeddings_validation.preprocessing.category_encoder import CategoryEncoder
+
+
+logger = logging.getLogger('luigi-interface')
 
 
 class XTransformer:
@@ -24,7 +29,13 @@ class XTransformer:
         index = df_target.df.set_index(df_target.cols_id).index
         features = [df.reindex(index=index) for df in features]
         features = [df.rename(columns={col: f'f_{i}__{col}' for col in df.columns}) for i, df in enumerate(features)]
-        return pd.concat(features, axis=1)
+        features = pd.concat(features, axis=1)
+
+        _strange_col_names = [col for col in features.columns if re.match(r'^[\w\d_]+$', col) is None]
+        if len(_strange_col_names) > 0:
+            logger.warning(f'Smells columns names: {_strange_col_names}')
+
+        return features
 
     def fit_transform(self, df_target):
         features = self.get_df_features(df_target)
