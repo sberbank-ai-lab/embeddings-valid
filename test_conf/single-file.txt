@@ -7,7 +7,7 @@ Collected 45 files with 0 errors
 
 ------------------------------------------------------------------------------------------------------------------------
 Metric: "auroc"
-split_name              scores_valid                                       
+                        scores_valid                                       
                                 mean  t_pm                           values
 model_name feature_name                                                    
 lgbm       baseline            0.823 0.003  [0.821 0.820 0.825 0.824 0.825]
@@ -22,7 +22,7 @@ xgb        baseline            0.804 0.003  [0.803 0.802 0.806 0.802 0.805]
 
 ------------------------------------------------------------------------------------------------------------------------
 Metric: "cnt_features"
-split_name              scores_valid
+                        scores_valid
                                 mean
 model_name feature_name             
 lgbm       baseline               27
@@ -37,34 +37,109 @@ xgb        baseline               27
 
 ------------------------------------------------------------------------------------------------------------------------
 Metric: "cnt_samples"
-split_name              scores_valid
+                        scores_valid
                                 mean
 model_name feature_name             
-lgbm       baseline            4,000
-           both                4,000
-           embeddings          4,000
-linear     baseline            4,000
-           both                4,000
-           embeddings          4,000
-xgb        baseline            4,000
-           both                4,000
-           embeddings          4,000
+lgbm       baseline             4000
+           both                 4000
+           embeddings           4000
+linear     baseline             4000
+           both                 4000
+           embeddings           4000
+xgb        baseline             4000
+           both                 4000
+           embeddings           4000
 
 ------------------------------------------------------------------------------------------------------------------------
-Metric: "auroc_score_time"
-split_name              scores_valid                                                
+Metric: "feature_load_time"
+                        process_info                                                
                                 mean t_pm t_int_l t_int_h std                 values
 model_name feature_name                                                             
-lgbm       baseline              0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-           both                  0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-           embeddings            0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
+lgbm       baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear     baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+xgb        baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+
+------------------------------------------------------------------------------------------------------------------------
+Metric: "train_fit_transform_time"
+                        process_info                                                
+                                mean t_pm t_int_l t_int_h std                 values
+model_name feature_name                                                             
+lgbm       baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear     baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+xgb        baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+
+------------------------------------------------------------------------------------------------------------------------
+Metric: "feature_transform_time"
+                        scores_valid                                                
+                                mean t_pm t_int_l t_int_h std                 values
+model_name feature_name                                                             
+lgbm       baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear     baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+xgb        baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+
+------------------------------------------------------------------------------------------------------------------------
+Metric: "train_time"
+                        process_info                                                
+                                mean t_pm t_int_l t_int_h std                 values
+model_name feature_name                                                             
+lgbm       baseline              0.6  0.7    -0.1     1.3 0.5  [1.0 1.0 1.0 0.0 0.0]
+           both                  1.2  1.0     0.2     2.2 0.8  [2.0 2.0 0.0 1.0 1.0]
+           embeddings            0.6  0.7    -0.1     1.3 0.5  [1.0 0.0 0.0 1.0 1.0]
 linear     baseline              0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
            both                  0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
            embeddings            0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-xgb        baseline              0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-           both                  0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-           embeddings            0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
+xgb        baseline              0.8  0.6     0.2     1.4 0.4  [1.0 1.0 1.0 0.0 1.0]
+           both                  2.6  0.7     1.9     3.3 0.5  [3.0 3.0 2.0 2.0 3.0]
+           embeddings            2.0  0.0     2.0     2.0 0.0  [2.0 2.0 2.0 2.0 2.0]
 
 ------------------------------------------------------------------------------------------------------------------------
-End of report.     Current time: 2020-07-17 07:52:44
+Metric: "auroc_score_time"
+                        scores_valid                                                
+                                mean t_pm t_int_l t_int_h std                 values
+model_name feature_name                                                             
+lgbm       baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear     baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+xgb        baseline                0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           both                    0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           embeddings              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+
+------------------------------------------------------------------------------------------------------------------------
+Metric: "feature_fit_info"
+                                                                                                                                                                                                                                                                                                                                                   process_info
+                                                                                                                                                                                                                                                                                                                                                          first
+model_name feature_name                                                                                                                                                                                                                                                                                                                                        
+lgbm       baseline      Encoded cols: {'f_0__cat_00': '2 values with 1.0 coverage', 'f_0__cat_01': '6 values with 1.0 coverage', 'f_0__cat_02': '9 values with 1.0 coverage'} Dropped cols: {'f_0__hash_00': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)', 'f_0__hash_01': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)'}
+           both          Encoded cols: {'f_0__cat_00': '2 values with 1.0 coverage', 'f_0__cat_01': '6 values with 1.0 coverage', 'f_0__cat_02': '9 values with 1.0 coverage'} Dropped cols: {'f_0__hash_00': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)', 'f_0__hash_01': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)'}
+           embeddings                                                                                                                                                                                                                                                                                                         Encoded cols: {} Dropped cols: {}
+linear     baseline      Encoded cols: {'f_0__cat_00': '2 values with 1.0 coverage', 'f_0__cat_01': '6 values with 1.0 coverage', 'f_0__cat_02': '9 values with 1.0 coverage'} Dropped cols: {'f_0__hash_00': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)', 'f_0__hash_01': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)'}
+           both          Encoded cols: {'f_0__cat_00': '2 values with 1.0 coverage', 'f_0__cat_01': '6 values with 1.0 coverage', 'f_0__cat_02': '9 values with 1.0 coverage'} Dropped cols: {'f_0__hash_00': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)', 'f_0__hash_01': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)'}
+           embeddings                                                                                                                                                                                                                                                                                                         Encoded cols: {} Dropped cols: {}
+xgb        baseline      Encoded cols: {'f_0__cat_00': '2 values with 1.0 coverage', 'f_0__cat_01': '6 values with 1.0 coverage', 'f_0__cat_02': '9 values with 1.0 coverage'} Dropped cols: {'f_0__hash_00': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)', 'f_0__hash_01': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)'}
+           both          Encoded cols: {'f_0__cat_00': '2 values with 1.0 coverage', 'f_0__cat_01': '6 values with 1.0 coverage', 'f_0__cat_02': '9 values with 1.0 coverage'} Dropped cols: {'f_0__hash_00': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)', 'f_0__hash_01': 'Droped with coverage_rate < min_coverage_rate (0.001 < 0.200)'}
+           embeddings                                                                                                                                                                                                                                                                                                         Encoded cols: {} Dropped cols: {}
+
+------------------------------------------------------------------------------------------------------------------------
+End of report.     Current time: 2020-07-27 09:29:46
 ------------------------------------------------------------------------------------------------------------------------

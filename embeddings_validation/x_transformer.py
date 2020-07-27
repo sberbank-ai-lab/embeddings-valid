@@ -71,7 +71,6 @@ class XTransformer:
         info = []
         for p in self.preprocessing:
             if type(p) is CategoryEncoder:
-                info.append(f'Encoded cols: {p.cols_for_encoding}')
+                info.append(f'Encoded cols: {p.cols_for_encoding_info}')
                 info.append(f'Dropped cols: {p.cols_for_drop}')
         return ' '.join(info)
-

@@ -19,6 +19,7 @@ class CategoryEncoder:
         self.min_coverage_rate = min_coverage_rate
 
         self.cols_for_encoding = None
+        self.cols_for_encoding_info = None
         self.cols_for_drop = None
         self.encoder = None
 
@@ -53,11 +54,14 @@ class CategoryEncoder:
     def fit_transform(self, df):
         self.fit_cols_for_encoding(df)
         self.fit_cols_for_drop(df)
+        self.cols_for_encoding_info = {}
 
         _df = df[self.cols_for_encoding].astype(str)
         categories = []
         for col in _df.columns:
-            v = _df[col].value_counts().iloc[:self.max_features].index.tolist()
+            v = _df[col].value_counts().iloc[:self.max_features]
+            self.cols_for_encoding_info[col] = f'{len(v)} values with {v.sum() / len(_df):.2} coverage'
+            v = v.index.tolist()
             v = sorted(v)
             categories.append(v)
 

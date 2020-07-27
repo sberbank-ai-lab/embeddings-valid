@@ -7,7 +7,7 @@ Collected 45 files with 0 errors
 
 ------------------------------------------------------------------------------------------------------------------------
 Metric: "auroc"
-split_name               scores_train                                        scores_valid                                        scores_test                                       
+                         scores_train                                        scores_valid                                        scores_test                                       
                                  mean  t_pm                           values         mean  t_pm                           values        mean  t_pm                           values
 model_name feature_name                                                                                                                                                            
 lgbm       01_baseline          0.977 0.004  [0.974 0.981 0.980 0.975 0.978]        0.734 0.013  [0.740 0.725 0.722 0.733 0.749]       0.724 0.009  [0.726 0.728 0.712 0.733 0.723]
@@ -22,7 +22,7 @@ linear2    01_baseline          0.759 0.003  [0.760 0.763 0.759 0.759 0.756]    
 
 ------------------------------------------------------------------------------------------------------------------------
 Metric: "cnt_features"
-split_name               scores_train scores_valid scores_test
+                         scores_train scores_valid scores_test
                                  mean         mean        mean
 model_name feature_name                                       
 lgbm       01_baseline             10           10          10
@@ -37,34 +37,109 @@ linear2    01_baseline             10           10          10
 
 ------------------------------------------------------------------------------------------------------------------------
 Metric: "cnt_samples"
-split_name               scores_train scores_valid scores_test
+                         scores_train scores_valid scores_test
                                  mean         mean        mean
 model_name feature_name                                       
-lgbm       01_baseline          8,000        2,000       1,000
-           02_embeddings        8,000        2,000       1,000
-           03_both              8,000        2,000       1,000
-linear     01_baseline          8,000        2,000       1,000
-           02_embeddings        8,000        2,000       1,000
-           03_both              8,000        2,000       1,000
-linear2    01_baseline          8,000        2,000       1,000
-           02_embeddings        8,000        2,000       1,000
-           03_both              8,000        2,000       1,000
+lgbm       01_baseline           8000         2000        1000
+           02_embeddings         8000         2000        1000
+           03_both               8000         2000        1000
+linear     01_baseline           8000         2000        1000
+           02_embeddings         8000         2000        1000
+           03_both               8000         2000        1000
+linear2    01_baseline           8000         2000        1000
+           02_embeddings         8000         2000        1000
+           03_both               8000         2000        1000
+
+------------------------------------------------------------------------------------------------------------------------
+Metric: "feature_load_time"
+                         process_info                                                
+                                 mean t_pm t_int_l t_int_h std                 values
+model_name feature_name                                                              
+lgbm       01_baseline              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                  0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear     01_baseline              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                  0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear2    01_baseline              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                  0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+
+------------------------------------------------------------------------------------------------------------------------
+Metric: "train_fit_transform_time"
+                         process_info                                                
+                                 mean t_pm t_int_l t_int_h std                 values
+model_name feature_name                                                              
+lgbm       01_baseline              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                  0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear     01_baseline              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                  0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear2    01_baseline              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                  0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+
+------------------------------------------------------------------------------------------------------------------------
+Metric: "feature_transform_time"
+                         scores_train                                                 scores_valid                                                 scores_test                                                
+                                 mean t_pm t_int_l t_int_h std                 values         mean t_pm t_int_l t_int_h std                 values        mean t_pm t_int_l t_int_h std                 values
+model_name feature_name                                                                                                                                                                                       
+lgbm       01_baseline            nan  nan     nan     nan nan  [nan nan nan nan nan]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings          nan  nan     nan     nan nan  [nan nan nan nan nan]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                nan  nan     nan     nan nan  [nan nan nan nan nan]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear     01_baseline            nan  nan     nan     nan nan  [nan nan nan nan nan]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings          nan  nan     nan     nan nan  [nan nan nan nan nan]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                nan  nan     nan     nan nan  [nan nan nan nan nan]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear2    01_baseline            nan  nan     nan     nan nan  [nan nan nan nan nan]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings          nan  nan     nan     nan nan  [nan nan nan nan nan]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                nan  nan     nan     nan nan  [nan nan nan nan nan]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+
+------------------------------------------------------------------------------------------------------------------------
+Metric: "train_time"
+                         process_info                                                
+                                 mean t_pm t_int_l t_int_h std                 values
+model_name feature_name                                                              
+lgbm       01_baseline            0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                1.4  0.7     0.7     2.1 0.5  [2.0 1.0 1.0 1.0 2.0]
+linear     01_baseline            0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear2    01_baseline            0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
 
 ------------------------------------------------------------------------------------------------------------------------
 Metric: "auroc_score_time"
-split_name               scores_train                                                 scores_valid                                                 scores_test                                                
+                         scores_train                                                 scores_valid                                                 scores_test                                                
                                  mean t_pm t_int_l t_int_h std                 values         mean t_pm t_int_l t_int_h std                 values        mean t_pm t_int_l t_int_h std                 values
 model_name feature_name                                                                                                                                                                                       
-lgbm       01_baseline            0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]         0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-           02_embeddings          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]         0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-           03_both                0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]         0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-linear     01_baseline            0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]         0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-           02_embeddings          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]         0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-           03_both                0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]         0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-linear2    01_baseline            0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]         0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-           02_embeddings          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]         0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
-           03_both                0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]          0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]         0.0  0.0    -0.0     0.0 0.0  [0.0 0.0 0.0 0.0 0.0]
+lgbm       01_baseline              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                  0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear     01_baseline              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                  0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+linear2    01_baseline              0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           02_embeddings            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
+           03_both                  0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]            0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]           0    0       0       0 0.0  [0.0 0.0 0.0 0.0 0.0]
 
 ------------------------------------------------------------------------------------------------------------------------
-End of report.     Current time: 2020-07-16 13:22:30
+Metric: "feature_fit_info"
+                         process_info
+                                first
+model_name feature_name              
+lgbm       01_baseline            nan
+           02_embeddings          nan
+           03_both                nan
+linear     01_baseline            nan
+           02_embeddings          nan
+           03_both                nan
+linear2    01_baseline            nan
+           02_embeddings          nan
+           03_both                nan
+
+------------------------------------------------------------------------------------------------------------------------
+End of report.     Current time: 2020-07-27 09:28:01
 ------------------------------------------------------------------------------------------------------------------------
