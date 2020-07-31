@@ -1,8 +1,8 @@
 import json
 import os
 import datetime
-from functools import partial
 
+import numpy as np
 import pandas as pd
 from pandas import json_normalize
 import scipy.stats
@@ -43,6 +43,87 @@ def t_int_h(x, p=0.95):
 def t_pm(x, p=0.95):
     l, h = t_interval(x, p)
     return (h - l) / 2
+
+
+def fisher_var_test(x, y):
+    """
+    http://www.machinelearning.ru/wiki/index.php?title=Критерий_Фишера
+
+    H[0]: s_1^2 == s_2^2
+    H[1]: s_1^2 != s_2^2
+
+    return True if H[0] should be rejected
+    """
+    v1, v2 = x.var(ddof=1), y.var(ddof=1)
+    n1, n2 = len(x), len(y)
+
+    f = v1 / v2
+    sf = scipy.stats.f(n1 - 1, n2 - 1)
+    return f, sf
+
+
+def t_test(x, y):
+    """
+    http://www.machinelearning.ru/wiki/index.php?title=Критерий_Стьюдента
+
+    H[0]: m1 == m2
+    H[1]: m1 < m2
+
+    return t-stat
+    """
+    m1, m2 = x.mean(), y.mean()
+    v1, v2 = x.var(ddof=1), y.var(ddof=1)
+    n1, n2 = len(x), len(y)
+
+    t = m2 - m1
+    t = t / (((n1 - 1) * v1 + (n2 - 1) * v2) / (n1 + n2 - 2)) ** 0.5
+    t = t * ((n1 * n2) / (n1 + n2)) ** 0.5
+    return t, scipy.stats.t(n1 + n2 - 2)
+
+
+def t_test_rev(x, y, alpha=0.05):
+    """
+    http://www.machinelearning.ru/wiki/index.php?title=Критерий_ Стьюдента
+
+    H[0]: m1 == m2 - A
+    H[1]: m1 < m2 - A
+
+    return A
+    """
+    m1, m2 = x.mean(), y.mean()
+    v1, v2 = x.var(ddof=1), y.var(ddof=1)
+    n1, n2 = len(x), len(y)
+
+    t = scipy.stats.t(n1 + n2 - 2).ppf(1 - alpha)
+    t = t / ((n1 * n2) / (n1 + n2)) ** 0.5
+    t = t * (((n1 - 1) * v1 + (n2 - 1) * v2) / (n1 + n2 - 2)) ** 0.5
+    return m2 - m1 - t
+
+
+def get_deltas(col, scores_x, baseline):
+    scores_x = np.array(scores_x)
+    baseline = baseline.values
+    result_fields = [
+        (col, 't_f_stat'),
+        (col, 't_f_alpha'),
+        (col, 't_t_stat'),
+        (col, 't_t_alpha'),
+        (col, 't_A'),
+        (col, 't_A_pp'),
+    ]
+
+    f, sf = fisher_var_test(baseline, scores_x)
+    t, st = t_test(baseline, scores_x)
+    A = t_test_rev(baseline, scores_x)
+
+    return pd.Series(data=[
+        f,
+        sf.cdf(f),
+        t,
+        st.cdf(t),
+        A,
+        A / baseline.mean() * 100,
+    ], index=result_fields)
 
 
 class ReportCollect(luigi.Task):
@@ -154,7 +235,8 @@ Params:
         print('', file=self.f)
 
     def print_row_pandas(self, metric_name, df_row,
-                         keep_columns=None, float_format='{:.4f}'):
+                         keep_columns=None, float_format='{:.4f}',
+                         baseline_key=None):
         self.print_line()
         with pd.option_context(
                 'display.float_format', float_format.format,
@@ -201,6 +283,15 @@ Params:
             metrics = [m_list[i] for i in keep_columns]
 
             df = df.groupby(['model_name', 'feature_name']).agg(metrics)
+            if baseline_key is not None:
+                baseline_scores = df_row.loc[tuple(baseline_key)]
+
+                df2 = df_row.groupby(['model_name', 'feature_name']).agg(list)
+                report_columns = []
+                for col in df2.columns:
+                    report_columns.append(df[[col]])
+                    report_columns.append(df2[col].apply(lambda x: get_deltas(col, x, baseline_scores[col])))
+                df = pd.concat(report_columns, axis=1)
 
             print(df, file=self.f)
             print('', file=self.f)

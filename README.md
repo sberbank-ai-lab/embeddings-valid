@@ -122,6 +122,21 @@ Show the path where results are presented. This should be json file with such st
 ```
 These results will be collected and presented in report
 
+
+## Compare with baseline
+You can compare result of our model with baseline.
+Define which row in your report is baseline (specify model name and feature name).
+Independent Two-sample t Test is used.
+1st samples are baseline scores (X). 2nd samples are scores from one specific report row (Y).
+Equal variances assumed due to data origin. And F-test of equality of variances are used.
+Next values will be added in report:
+- t_f_stat: statistic of F-test
+- t_f_alpha: probability to have such or less t_f_stat value
+- t_t_stat: statistic of T-test (positive value show that row scores are greater than baseline)
+- t_t_alpha: probability to have such or less t_t_stat value
+- t_A: gap between X and Y which can be reduced with keeping statistically significant difference between X and Y
+- t_A_pp: t_A in percent above baseline
+
 ## Error handling
 Some folds can fail during execution. There are some strategies to handle it:
   - fail: don't collect report until all folds will be correct

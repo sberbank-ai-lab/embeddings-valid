@@ -96,7 +96,7 @@
         is_check_train: false
         error_handling: fail
 
-        auroc: {float_format: "{:.3f}", keep_columns: ["mean", "t_pm", values]}
+        auroc: {float_format: "{:.3f}", keep_columns: ["mean", "t_pm", values], baseline_key=["lgbm", "baseline"]}
 
         cnt_features: {float_format: "{:.0f}", keep_columns: ["mean"]}
         cnt_samples: {float_format: "{:9,.0f}", keep_columns: ["mean"]}
