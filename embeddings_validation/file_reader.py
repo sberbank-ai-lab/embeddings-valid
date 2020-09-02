@@ -15,7 +15,7 @@ ID_TYPE_MAPPING = {
 class BaseReader:
     def __init__(self, conf):
         self.conf = conf
-        self.source_path = None
+        self.source_path = []
         self.df = None
 
         target_conf = conf['target']
@@ -59,8 +59,16 @@ class BaseReader:
         self = cls(conf)
         columns = self.keep_columns()
 
-        self.source_path = os.path.join(conf.root_path, file_name)
-        self.df = self._read_pd(self.source_path, read_args)
+        if type(file_name) is not list:
+            file_name = [file_name]
+        self.source_path = []
+        df = []
+        for f in file_name:
+            path = os.path.join(conf.root_path, f)
+            self.source_path.append(path)
+            df.append(self._read_pd(path, read_args))
+        self.df = pd.concat(df, axis=0)
+
         if rename_cols is not None:
             self.df = self.df.rename(columns=rename_cols)
         if drop_cols is not None:

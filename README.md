@@ -10,7 +10,9 @@ Id can be one ore many columns. dtypes can be string, int, date or datetime.
 Id columns are used for join with other filed. Names of columns should be identical across the files,
 and you can rename some columns when file loads.
 
-Targets for all data should be in one file. Many target files will be in the next releases.
+Targets for all data expected as a single list.
+Show the name of file if all targets are in a single file.
+Show the list of file names if targets are in a many files.
 
 ## Id file
 Contains only ids columns. Used for split data on folds for train, valid and test.
