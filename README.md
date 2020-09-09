@@ -255,6 +255,7 @@ less test_conf/single-file.txt
 ```
 
 # TODO
+- report config summary, print warnings for smells options
 - features check:
     - is category
     - is datetime
