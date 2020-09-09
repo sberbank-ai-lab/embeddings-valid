@@ -52,7 +52,8 @@ class BaseReader:
         raise NotImplementedError(f'Not implemented for "{ext}" file type')
 
     @classmethod
-    def read_table(cls, conf, file_name, rename_cols=None, drop_cols=None, read_args=None, **kwargs):
+    def read_table(cls, conf, file_name, rename_cols=None, drop_cols=None, read_args=None,
+                   drop_duplicated_ids=False, **kwargs):
         if read_args is None:
             read_args = {}
 
@@ -77,6 +78,10 @@ class BaseReader:
         if columns is not None:
             self.df = self.df[columns]
         self.cols_id_type_cast()
+        if drop_duplicated_ids:
+            self.drop_duplicated_ids()
+        else:
+            self.check_duplicated_ids()
 
         return self
 
@@ -89,6 +94,15 @@ class BaseReader:
     def cols_id_type_cast(self):
         for col, dtype in zip(self.cols_id, self.cols_id_type):
             self.df[col] = self.df[col].astype(dtype)
+
+    def drop_duplicated_ids(self):
+        self.df = self.df.drop_duplicates(subset=self.cols_id, keep='first', ignore_index=True)
+
+    def check_duplicated_ids(self):
+        duplicated_count = self.df.duplicated(subset=self.cols_id, keep=False).sum()
+        if duplicated_count > 0:
+            raise IndexError(f'Found {duplicated_count} duplicated rows in "{self.source_path}". '
+                             f'Check and fix your dataset or use `drop_duplicated_ids=True`')
 
     @property
     def target_values(self):

@@ -2,6 +2,9 @@
 Estimate your feature vector quality on downstream task
 
 # Concepts
+# File loading
+TODO: describe common file load features here
+
 ## Target file
 Tabular file with id field(s) and target columns.
 This is a base for quality estimation.
@@ -13,6 +16,9 @@ and you can rename some columns when file loads.
 Targets for all data expected as a single list.
 Show the name of file if all targets are in a single file.
 Show the list of file names if targets are in a many files.
+
+Duplications are checks. Exception will raised if any or them found.
+Use `drop_duplicated_ids=True` for dataset auto-repair. First record will ne kept.
 
 ## Id file
 Contains only ids columns. Used for split data on folds for train, valid and test.
