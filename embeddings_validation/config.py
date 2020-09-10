@@ -2,7 +2,9 @@ import argparse
 import os
 
 import logging
-from pyhocon import ConfigFactory
+from glob import glob
+
+from pyhocon import ConfigFactory, HOCONConverter
 
 logger = logging.getLogger(__name__)
 
@@ -37,13 +39,21 @@ class Config:
         return cls(conf=conf, root_path=root_path)
 
     @classmethod
-    def read_file(cls, file_name):
+    def read_file(cls, file_name, conf_extra=None):
         logger.info(f'Load config from "{file_name}"')
         file_conf = ConfigFactory.parse_file(file_name, resolve=False)
+
+        if conf_extra is not None:
+            over_conf = ConfigFactory.parse_string(conf_extra)
+            file_conf = over_conf.with_fallback(file_conf)
 
         root_path = os.path.dirname(os.path.abspath(file_name))
 
         return cls(conf=file_conf, root_path=root_path)
+
+    def save_tmp_copy(self, tmp_file_name):
+        with open(tmp_file_name, 'w') as f:
+            f.write(HOCONConverter.convert(self.conf, 'hocon'))
 
     def __getitem__(self, item):
         return self.conf[item]
@@ -56,9 +66,21 @@ class Config:
     def work_dir(self):
         return os.path.join(self.root_path, self.conf['environment.work_dir'])
 
+    def resolve_path_wc(self, path_wc):
+        for path in glob(os.path.join(self.root_path, path_wc)):
+            file_name = os.path.basename(path)
+            file_name = os.path.splitext(file_name)[0]
+            yield file_name, path
+
     @property
     def features(self):
-        return self._read_enabled('features')
+        features = self._read_enabled('features')
+        if 'auto_features' in self.conf:
+            auto_features = {name: {'read_params': {'file_name': path}, 'target_options': {}}
+                             for path_wc in self.conf['auto_features']
+                             for name, path in self.resolve_path_wc(path_wc)}
+            features.update(auto_features)
+        return features
 
     @property
     def external_scores(self):

@@ -1,7 +1,20 @@
+import os
+
 import luigi
 import argparse
+import datetime
 
 from embeddings_validation import ReportCollect
+from embeddings_validation.config import Config
+
+
+def read_extra_conf(file_name, conf_extra):
+    conf = Config.read_file(file_name, conf_extra)
+    name, ext = os.path.splitext(file_name)
+    tmp_file_name = f'{name}_{datetime.datetime.now().timestamp():.0f}{ext}'
+    conf.save_tmp_copy(tmp_file_name)
+    return tmp_file_name
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -9,10 +22,15 @@ if __name__ == '__main__':
     parser.add_argument('--conf', required=True)
     parser.add_argument('--total_cpu_count', type=int, required=True)
     parser.add_argument('--local_scheduler', action='store_true', required=False)
+    parser.add_argument('--conf_extra', required=False)
     args = parser.parse_args()
 
+    conf_file_name = args.conf
+    if args.conf_extra is not None:
+        conf_file_name = read_extra_conf(conf_file_name, args.conf_extra)
+
     task = ReportCollect(
-        conf=args.conf,
+        conf=conf_file_name,
         total_cpu_count=args.total_cpu_count,
     )
 
