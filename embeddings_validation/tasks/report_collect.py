@@ -211,7 +211,7 @@ class ReportCollect(luigi.Task):
                 self.print_row_pandas(k, metric_index[k].loc[k], **conf['report.metrics'].get(k, {}))
                 del metric_index[k]
 
-            if len(metric_index) > 0 and conf['report.print_all_metrics']:
+            if conf['report.print_all_metrics'] and len(metric_index) > 0:
                 print('Other metrics:', file=f)
                 for k in metric_index:
                     self.print_row_pandas(k, metric_index[k].loc[k])

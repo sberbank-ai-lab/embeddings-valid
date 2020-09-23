@@ -101,6 +101,7 @@
     report: {
         is_check_train: true
         error_handling: fail
+        print_all_metrics: true
 
         metrics: {
             auroc: {float_format: "{:.3f}", keep_columns: ["mean", "t_pm", values]}
