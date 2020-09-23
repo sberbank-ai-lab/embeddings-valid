@@ -234,7 +234,7 @@ Params:
 
     def print_row_pandas(self, metric_name, df_row,
                          keep_columns=None, float_format='{:.4f}',
-                         baseline_key=None):
+                         baseline_key=None, split_columns=False):
         self.print_line()
         with pd.option_context(
                 'display.float_format', float_format.format,
@@ -263,6 +263,7 @@ Params:
 
             print(f'Metric: "{metric_name}"', file=self.f)
             df = df_row.copy()
+            main_columns = df.columns
 
             try:
                 for col in df_row.columns:
@@ -297,7 +298,11 @@ Params:
                     report_columns.append(df2[col].apply(lambda x: get_deltas(col, x, baseline_scores[col])))
                 df = pd.concat(report_columns, axis=1)
 
-            print(df, file=self.f)
+            if split_columns:
+                for mc in main_columns:
+                    print(df.loc[:, [mc]], file=self.f)
+            else:
+                print(df, file=self.f)
             print('', file=self.f)
 
     def print_footer(self):

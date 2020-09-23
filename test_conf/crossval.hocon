@@ -98,7 +98,7 @@
         print_all_metrics: true
 
         metrics: {
-            auroc: {float_format: "{:.3f}", keep_columns: ["mean", "t_pm", values]}
+            auroc: {float_format: "{:.3f}", keep_columns: ["mean", "t_pm", values], split_columns: true}
 
             cnt_features: {float_format: "{:.0f}", keep_columns: ["mean"]}
             cnt_samples: {float_format: "{:9,.0f}", keep_columns: ["mean"]}
