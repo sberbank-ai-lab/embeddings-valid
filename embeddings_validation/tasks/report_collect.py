@@ -207,13 +207,11 @@ class ReportCollect(luigi.Task):
             self.print_header()
             self.print_errors(total_count, error_count)
 
-            for k in conf['report'].keys():
-                if k in ('is_check_train', 'error_handling'):
-                    continue
-                self.print_row_pandas(k, metric_index[k].loc[k], **conf['report'].get(k, {}))
+            for k in conf['report.metrics'].keys():
+                self.print_row_pandas(k, metric_index[k].loc[k], **conf['report.metrics'].get(k, {}))
                 del metric_index[k]
 
-            if len(metric_index) > 0:
+            if len(metric_index) > 0 and conf['report.print_all_metrics']:
                 print('Other metrics:', file=f)
                 for k in metric_index:
                     self.print_row_pandas(k, metric_index[k].loc[k])
@@ -283,6 +281,12 @@ Params:
             metrics = [m_list[i] for i in keep_columns]
 
             df = df.groupby(['model_name', 'feature_name']).agg(metrics)
+            if is_numeric:
+                for col in df.columns:
+                    if col[1] == 'values':
+                        continue
+                    df[col] = df[col].astype(float)
+
             if baseline_key is not None:
                 baseline_scores = df_row.loc[tuple(baseline_key)]
 

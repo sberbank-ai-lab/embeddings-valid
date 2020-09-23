@@ -89,6 +89,8 @@ For each metrics we provide on part of report.
 Each part contains 3 sections for train, validation and optional for test files.
 Each section contains results for different feature files and it combinations.
 Each result contains mean with confidence intervals of N scores from N folds (or iterations).
+Only metrics presented in `report.metrics` will be in report if `report.print_all_metrics=false`.
+All available metrics will be in report if `report.print_all_metrics=true`.
 
 ## Report format
 Each cell of final report have scores from N iteration.
