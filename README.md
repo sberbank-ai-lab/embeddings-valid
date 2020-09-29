@@ -144,8 +144,17 @@ Next values will be added in report:
 - t_f_alpha: probability to have such or less t_f_stat value
 - t_t_stat: statistic of T-test (positive value show that row scores are greater than baseline)
 - t_t_alpha: probability to have such or less t_t_stat value
-- t_A: gap between X and Y which can be reduced with keeping statistically significant difference between X and Y
-- t_A_pp: t_A in percent above baseline
+- t_A (removed): gap between X and Y which can be reduced with keeping statistically significant difference between X and Y
+- t_A_pp (removed): t_A in percent above baseline
+- delta: absolute difference between row scores and baseline
+- delta_pm: confidence interval delta for previous metric
+- delta_l: delta - delta_pm, lower bound of confidence interval
+- delta_h: delta + delta_pm, upper bound of confidence interval
+- delta_pp: delta in percent above baseline
+- delta_pm_pp: delta_pm in percent above baseline
+- delta_l_pp: delta_l in percent above baseline
+- delta_h_pp: delta_h in percent above baseline
+
 
 ## Error handling
 Some folds can fail during execution. There are some strategies to handle it:

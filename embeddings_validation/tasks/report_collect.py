@@ -100,7 +100,38 @@ def t_test_rev(x, y, alpha=0.05):
     return m2 - m1 - t
 
 
-def get_deltas(col, scores_x, baseline):
+def t_test_delta_intervals(x, y, alpha=0.05):
+    """
+    http://www.machinelearning.ru/wiki/index.php?title=Критерий_ Стьюдента
+
+    delta = m2 - m1
+
+    return delta, delta_pm
+    """
+    m1, m2 = x.mean(), y.mean()
+    v1, v2 = x.var(ddof=1), y.var(ddof=1)
+    n1, n2 = len(x), len(y)
+
+    delta = m2 - m1
+
+    t = scipy.stats.t(n1 + n2 - 2).ppf(1 - alpha / 2)
+    t = t / ((n1 * n2) / (n1 + n2)) ** 0.5
+    t = t * (((n1 - 1) * v1 + (n2 - 1) * v2) / (n1 + n2 - 2)) ** 0.5
+
+    return delta, t
+
+
+def get_delta_a_value(col, scores_x, baseline):
+    """
+
+    :param col:
+    :param scores_x:
+    :param baseline:
+    :return: [t_f_stat, t_f_alpha, t_t_stat, t_t_alpha, t_A, t_A_pp]
+        where
+        t_A - is absolute delta, which can be added to `baseline`,
+            and `scores_x` still significant bigger than `baseline`
+    """
     scores_x = np.array(scores_x)
     baseline = baseline.values
     result_fields = [
@@ -123,6 +154,62 @@ def get_deltas(col, scores_x, baseline):
         st.cdf(t),
         A,
         A / baseline.mean() * 100,
+    ], index=result_fields)
+
+
+def get_delta_intervals(col, scores_x, baseline):
+    """
+
+    :param col:
+    :param scores_x:
+    :param baseline:
+    :return: [t_f_stat, t_f_alpha, t_t_stat, t_t_alpha,
+              t_delta, t_delta_pm, t_delta_l, t_delta_h,
+              t_delta_pp, t_delta_pm_pp, t_delta_l_pp, t_delta_h_pp]
+        where
+        t_delta - show how `scores_x` still bigger than `baseline`
+        t_delta_pm - is confidence interval delta for t_delta
+        t_delta_l = t_delta - t_delta_pm
+        t_delta_h = t_delta + t_delta_pm
+    """
+    scores_x = np.array(scores_x)
+    baseline = baseline.values
+    result_fields = [
+        (col, 't_f_stat'),
+        (col, 't_f_alpha'),
+        (col, 't_t_stat'),
+        (col, 't_t_alpha'),
+        #
+        (col, 't_delta'),
+        (col, 't_delta_pm'),
+        (col, 't_delta_l'),
+        (col, 't_delta_h'),
+        #
+        (col, 't_delta_pp'),
+        (col, 't_delta_pm_pp'),
+        (col, 't_delta_l_pp'),
+        (col, 't_delta_h_pp'),
+    ]
+
+    f, sf = fisher_var_test(baseline, scores_x)
+    t, st = t_test(baseline, scores_x)
+    delta, delta_pm = t_test_delta_intervals(baseline, scores_x)
+
+    return pd.Series(data=[
+        f,
+        sf.cdf(f),
+        t,
+        st.cdf(t),
+        #
+        delta,
+        delta_pm,
+        delta - delta_pm,
+        delta + delta_pm,
+        #
+        delta / baseline.mean() * 100,
+        delta_pm / baseline.mean() * 100,
+        (delta - delta_pm) / baseline.mean() * 100,
+        (delta + delta_pm) / baseline.mean() * 100,
     ], index=result_fields)
 
 
@@ -295,7 +382,7 @@ Params:
                 report_columns = []
                 for col in df2.columns:
                     report_columns.append(df[[col]])
-                    report_columns.append(df2[col].apply(lambda x: get_deltas(col, x, baseline_scores[col])))
+                    report_columns.append(df2[col].apply(lambda x: get_delta_intervals(col, x, baseline_scores[col])))
                 df = pd.concat(report_columns, axis=1)
 
             if split_columns:
