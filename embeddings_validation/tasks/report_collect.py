@@ -281,12 +281,10 @@ class ReportCollect(luigi.Task):
 
         pd_report, total_count, error_count = self.load_results()
         pd_split_report = pd_report.loc[splits].unstack(0).reindex(columns=splits)
-        pd_process_report = pd_report.loc[['process_info']].unstack(0)
-
-        metric_index = {
-            **{m: pd_split_report for m in pd_split_report.index.get_level_values(0).unique()},
-            **{m: pd_process_report for m in pd_process_report.index.get_level_values(0).unique()}
-        }
+        metric_index = {m: pd_split_report for m in pd_split_report.index.get_level_values(0).unique()}
+        if 'process_info' in pd_report:
+            pd_process_report = pd_report.loc[['process_info']].unstack(0)
+            metric_index.update({m: pd_process_report for m in pd_process_report.index.get_level_values(0).unique()})
 
         with self.output().open('w') as f:
             self.f = f
