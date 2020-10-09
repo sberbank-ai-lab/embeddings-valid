@@ -232,6 +232,10 @@ class ReportByFolds(luigi.Task):
                 total_cpu_count=self.total_cpu_count,
             )
 
+    def output(self):
+        for target in self.input():
+            yield target
+
 
 class ReportCollect(luigi.Task):
     conf = luigi.Parameter()
@@ -268,14 +272,17 @@ class ReportCollect(luigi.Task):
         total_count = 0
         error_count = 0
         for i in self.input():
-            total_count += 1
-            with open(i.path, 'r') as f:
-                scores = json.load(f)
+            if isinstance(i, luigi.LocalTarget):
+                i = [i]
+            for i2 in i:
+                total_count += 1
+                with open(i2.path, 'r') as f:
+                    scores = json.load(f)
 
-            if len(scores) == 0:
-                error_count += 1
-                os.remove(i.path)
-            parts.extend(scores)
+                if len(scores) == 0:
+                    error_count += 1
+                    os.remove(i2.path)
+                parts.extend(scores)
 
         pd_report = json_normalize(parts, max_level=1)
         pd_report = pd_report.melt(id_vars=['model_name', 'feature_name', 'fold_id'], var_name='_metric')
