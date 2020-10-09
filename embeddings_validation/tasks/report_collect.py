@@ -213,6 +213,26 @@ def get_delta_intervals(col, scores_x, baseline):
     ], index=result_fields)
 
 
+class ReportByFolds(luigi.Task):
+    conf = luigi.Parameter()
+    total_cpu_count = luigi.IntParameter()
+
+    model_name = luigi.Parameter()
+    feature_name = luigi.Parameter()
+
+    def requires(self):
+        conf = Config.read_file(self.conf)
+
+        for fold_id in conf.folds:
+            yield FoldEstimator(
+                conf=self.conf,
+                model_name=self.model_name,
+                feature_name=self.feature_name,
+                fold_id=fold_id,
+                total_cpu_count=self.total_cpu_count,
+            )
+
+
 class ReportCollect(luigi.Task):
     conf = luigi.Parameter()
     total_cpu_count = luigi.IntParameter()
@@ -224,14 +244,12 @@ class ReportCollect(luigi.Task):
 
         for model_name in conf.models:
             for feature_name in conf.features:
-                for fold_id in conf.folds:
-                    yield FoldEstimator(
-                        conf=self.conf,
-                        model_name=model_name,
-                        feature_name=feature_name,
-                        fold_id=fold_id,
-                        total_cpu_count=self.total_cpu_count,
-                    )
+                yield ReportByFolds(
+                    conf=self.conf,
+                    model_name=model_name,
+                    feature_name=feature_name,
+                    total_cpu_count=self.total_cpu_count,
+                )
         for name, external_path in conf.external_scores.items():
             yield ExternalScore(
                 conf=self.conf,
