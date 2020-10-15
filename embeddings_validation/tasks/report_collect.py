@@ -284,6 +284,9 @@ class ReportCollect(luigi.Task):
                     os.remove(i2.path)
                 parts.extend(scores)
 
+        if len(parts) == 0:
+            raise AttributeError('No parts are found')
+
         pd_report = json_normalize(parts, max_level=1)
         pd_report = pd_report.melt(id_vars=['model_name', 'feature_name', 'fold_id'], var_name='_metric')
         pd_report = pd.concat([

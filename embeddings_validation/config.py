@@ -84,7 +84,14 @@ class Config:
 
     @property
     def external_scores(self):
-        return {k: v for k, v in self.conf['external_scores'].items()}
+        ext_scores = {k: v for k, v in self.conf['external_scores'].items()}
+        if 'auto_scores' in self.conf:
+            auto_scores = {name: path
+                           for path_wc in self.conf['auto_scores']
+                           for name, path in self.resolve_path_wc(path_wc)}
+            ext_scores.update(auto_scores)
+
+        return ext_scores
 
     @property
     def models(self):
