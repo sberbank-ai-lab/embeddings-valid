@@ -342,7 +342,7 @@ Params:
     def print_errors(self, total_count, error_count):
         print(f"Collected {total_count} files with {error_count} errors", file=self.f)
         if error_count > 0:
-            print(f"Check logs for detail information", file=f)
+            print(f"Check logs for detail information", file=self.f)
         print('', file=self.f)
 
     def print_row_pandas(self, metric_name, df_row,
