@@ -130,7 +130,29 @@ Show the path where results are presented. This should be json file with such st
   }
 ]
 ```
-These results will be collected and presented in report
+These results will be collected and presented in report.
+
+## Folds for external scores
+Your external scorer can use train-valid-test split from embedding_validation.
+1. Set `split.row_order_shuffle_seed` for specify random row order in folds.
+2. Run `python -m embeddings_validation --split_only`
+3. Run your scorer and read fold information:
+    ```python
+    from embeddings_validation.file_reader import TargetFile
+ 
+    fold_info = json.load(f'{environment.work_dir}/folds/folds.json')
+    current_fold = fold_info[fold_id]
+   
+    train_targets = TargetFile.load(current_fold['train']['path'])
+    valid_targets = TargetFile.load(current_fold['valid']['path'])
+    test_targets = TargetFile.load(current_fold['test']['path'])
+
+    if labeled_amount:
+        data = train_targets.df.iloc[:labeled_amount]
+    else:
+        data = train_targets.df
+    ```
+4. Save scores as was described before
 
 
 ## Compare with baseline

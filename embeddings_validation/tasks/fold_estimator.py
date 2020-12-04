@@ -117,20 +117,23 @@ class FoldEstimator(luigi.Task):
         if 'labeled_amount' in target_options:
             df_target = self.reduce_labeled_amount(
                 df_target,
-                target_options['labeled_amount'],
-                target_options['random_state'],
+                target_options['labeled_amount']
             )
         return df_target
 
-    @staticmethod
-    def reduce_labeled_amount(df_target, labeled_amount, random_state):
-        if type(labeled_amount) is float and labeled_amount <= 1.0:
-            new_target = df_target.clone_schema()
-            new_target.df = df_target.df.sample(frac=labeled_amount, random_state=random_state)
-            return new_target
-        if type(labeled_amount) is int:
-            new_target = df_target.clone_schema()
-            new_target.df = df_target.df.sample(n=labeled_amount, random_state=random_state)
-            return new_target
+    def reduce_labeled_amount(self, df_target, labeled_amount):
+        conf = Config.read_file(self.conf)
+        row_order_shuffle_seed = conf['split'].get('row_order_shuffle_seed', None)
+        if row_order_shuffle_seed is None:
+            logging.warning('`row_order_shuffle_seed` not set. Row order may be incorrect')
 
-        raise AttributeError(f'wrong format of labeled_amount ({labeled_amount}), type: {type(labeled_amount)}')
+        if type(labeled_amount) is float and labeled_amount <= 1.0:
+            n = int(len(df_target) * labeled_amount)
+        elif type(labeled_amount) is int:
+            n = labeled_amount
+        else:
+            raise AttributeError(f'wrong format of labeled_amount ({labeled_amount}), type: {type(labeled_amount)}')
+
+        new_target = df_target.clone_schema()
+        new_target.df = df_target.df.iloc[:n]
+        return new_target

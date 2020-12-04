@@ -23,6 +23,7 @@
         test_id: {
             file_name: "../test_data/id_test.csv"
         }
+        row_order_shuffle_seed: 42
 
         n_iteration: 5
         train_shuffle_random_states: [1, 2, 3, 4, 5]
@@ -37,7 +38,7 @@
         01_baseline_50: {
             enabled: true
             read_params: {file_name: "../test_data/features_0.csv", rename_cols: {uid: id}}
-            target_options: {labeled_amount: 0.1, random_state: 42}
+            target_options: {labeled_amount: 0.1}
         }
         02_embeddings: {
             enabled: true

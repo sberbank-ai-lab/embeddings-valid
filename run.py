@@ -16,7 +16,7 @@ less test_conf/train-test.txt
 cd /mnt/data/kireev/pycharm_deploy/embeddings_validation/
 rm -r test_conf/train-test.work/; rm test_conf/train-test.txt
 PYTHONPATH="/mnt2/kireev/pycharm-deploy/vector_test" \
-    python -m embeddings_validation --workers 1 --conf test_conf/train-test.hocon --total_cpu_count 6 --local-schedule
+    python -m embeddings_validation --workers 1 --conf test_conf/train-test.hocon --total_cpu_count 6 --local_scheduler
 less test_conf/train-test.txt
 
 cd /mnt/data/kireev/pycharm_deploy/embeddings_validation/

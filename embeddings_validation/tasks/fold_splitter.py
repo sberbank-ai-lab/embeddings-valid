@@ -3,6 +3,7 @@ import os
 import luigi
 import json
 
+import numpy as np
 from sklearn.model_selection import StratifiedKFold, KFold
 
 from embeddings_validation.config import Config
@@ -40,6 +41,7 @@ class FoldSplitter(luigi.Task):
         conf = Config.read_file(self.conf)
         df_target_fold = df_target.select_ids(ids)
         path = os.path.join(conf.work_dir, 'folds', save_path)
+        df_target_fold = self.shuffle_before_dump(df_target_fold)
         df_target_fold.dump(path)
         return {'path': path, 'shape': df_target_fold.df.shape}
 
@@ -47,8 +49,23 @@ class FoldSplitter(luigi.Task):
         conf = Config.read_file(self.conf)
         df_target_fold = df_target.select_pos(pos)
         path = os.path.join(conf.work_dir, 'folds', save_path)
+        df_target_fold = self.shuffle_before_dump(df_target_fold)
         df_target_fold.dump(path)
         return {'path': path, 'shape': df_target_fold.df.shape}
+
+    def shuffle_before_dump(self, df_target_fold):
+        conf = Config.read_file(self.conf)
+        row_order_shuffle_seed = conf['split'].get('row_order_shuffle_seed', None)
+        if row_order_shuffle_seed is None:
+            return df_target_fold
+
+        new_target_fold = df_target_fold.clone_schema()
+        shuffle_ix = np.random.choice(len(df_target_fold), len(df_target_fold), replace=False)
+        df = df_target_fold.df
+        df = df.sort_values(df_target_fold.cols_id)
+        df = df.iloc[shuffle_ix].reset_index(drop=True)
+        new_target_fold.df = df
+        return new_target_fold
 
     def train_test_split(self):
         conf = Config.read_file(self.conf)
