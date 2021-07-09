@@ -287,6 +287,19 @@ python -m embeddings_validation --workers 4 --conf test_conf/single-file.hocon -
 less test_conf/single-file.txt
 ```
 
+## Test example `single-file-short.hocon`
+```
+# delete old files
+rm -r test_conf/single-file-short.work/
+rm test_conf/single-file-short.txt
+
+# run report collection
+python -m embeddings_validation --workers 4 --conf test_conf/single-file-short.hocon --total_cpu_count 10
+
+# check final report
+less test_conf/single-file-short.txt
+```
+
 # TODO
 - report config summary, print warnings for smells options
 - features check:

@@ -24,9 +24,16 @@ class XTransformer:
         self.load_time = None
         self.load_features()
 
+        self.local_info = []
+
     def get_df_features(self, df_target):
         features = [df.df.set_index(df.cols_id) for df in self.feature_list]
         index = df_target.df.set_index(df_target.cols_id).index
+        for i, df in enumerate(features):
+            not_found = len(index.difference(df.index))
+            if not_found > 0:
+                self.local_info.append(f'Missing {not_found} records from {len(index)} in "{i}"th feature file')
+
         features = [df.reindex(index=index) for df in features]
         features = [df.rename(columns={col: f'f_{i}__{col}' for col in df.columns}) for i, df in enumerate(features)]
         features = pd.concat(features, axis=1)
@@ -69,6 +76,8 @@ class XTransformer:
 
     def get_feature_fit_info(self):
         info = []
+        if len(self.local_info) > 0:
+            info.extend(self.local_info)
         for p in self.preprocessing:
             if type(p) is CategoryEncoder:
                 info.append(f'Encoded cols: {p.cols_for_encoding_info}')
