@@ -49,6 +49,8 @@ class BaseReader:
             return pd.read_csv(path, **read_args)
         if ext == '.pickle':
             return pd.read_pickle(path, **read_args)
+        if ext == '.parquet':
+            return pd.read_parquet(path, **read_args)
         raise NotImplementedError(f'Not implemented for "{ext}" file type')
 
     @classmethod
