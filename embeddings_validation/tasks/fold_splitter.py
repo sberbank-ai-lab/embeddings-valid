@@ -183,4 +183,3 @@ class FoldSplitter(luigi.Task):
         valid, train = check_intersect(valid, train, 'valid-train')
 
         return train, valid, test
-

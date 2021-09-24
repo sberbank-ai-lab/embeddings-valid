@@ -261,6 +261,18 @@ python -m embeddings_validation --workers 4 --conf test_conf/train-test.hocon --
 # check final report
 less test_conf/train-test.txt
 ```
+## Test example `train-valid-1iter.hocon`
+```
+# delete old files
+rm -r test_conf/train-valid-1iter.work/
+rm test_conf/train-valid-1iter.txt
+
+# run report collection
+python -m embeddings_validation --workers 4 --conf test_conf/train-valid-1iter.hocon --total_cpu_count 10
+
+# check final report
+less test_conf/train-valid-1iter.txt
+```
 ## Test example `crossval.hocon`
 ```
 # delete old files
